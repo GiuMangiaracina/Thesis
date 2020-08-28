@@ -1,0 +1,8 @@
+target of users: 
+
+User 1 :  Response time < 35 s AND Availability >= 90%
+
+User 2: Throughput > 30000 n/s AND Availability >= 80%
+
+User 3:  Data Consistency > 0.7 OR Network Latency  <= 1250 ms
+
