@@ -1,0 +1,271 @@
+{
+	"info": {
+		"_postman_id": "56d4ecc6-3486-4688-a25e-8c614c6ebb29",
+		"name": "toxiProxy for Minio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get proxies",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.99.100:8474/proxies",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8474",
+					"path": [
+						"proxies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add a proxy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "  {\n    \"name\": \"minioProxy\",\n    \"listen\": \"192.168.99.100:8000\",\n    \"upstream\": \"192.168.99.100:9000\",\n    \"enabled\": true\n  }"
+				},
+				"url": {
+					"raw": "http://192.168.99.100:8474/proxies",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8474",
+					"path": [
+						"proxies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "populate: add multiple proxies",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"name\": \"minioProxy\",\n    \"listen\": \"192.168.99.100:8000\",\n    \"upstream\": \"192.168.99.100:9000\",\n    \"enabled\": true\n  }\n]"
+				},
+				"url": {
+					"raw": "http://192.168.99.100:8474/populate",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8474",
+					"path": [
+						"populate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get specific proxy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.99.100:8474/proxies/minioProxy1",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8474",
+					"path": [
+						"proxies",
+						"minioProxy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete proxy",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.99.100:8474/proxies/minioProxy1",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8474",
+					"path": [
+						"proxies",
+						"minioProxy1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "set toxic for a specific proxy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"latency\",\n\t\"type\": \"latency\",\n\t\"stream\": \"downstream\",\n\t\"toxicity\": 1.0,\n\t\"attributes\": \n\t\t{\n\t\t\t\"latency\":200,\n\t\t\t\"jitter\":0\n\t\t}\n}"
+				},
+				"url": {
+					"raw": "http://192.168.99.100:8474/proxies/minioProxy1/toxics",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8474",
+					"path": [
+						"proxies",
+						"minioProxy",
+						"toxics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update a specific proxy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "  {\n    \"name\": \"minioProxy\",\n    \"listen\": \"192.168.99.100:8000\",\n    \"upstream\": \"192.168.99.100:9000\",\n    \"enabled\": true\n  }"
+				},
+				"url": {
+					"raw": "http://192.168.99.100:8474/proxies/minioProxy1",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8474",
+					"path": [
+						"proxies",
+						"minioProxy1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get latency of a specific proxy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8474/proxies/minioProxy1/toxics/latency",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8474",
+					"path": [
+						"proxies",
+						"minioProxy1",
+						"toxics",
+						"latency"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "modify latency",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"latency\",\n\t\"type\": \"latency\",\n\t\"stream\": \"downstream\",\n\t\"toxicity\": 1.0,\n\t\"attributes\": \n\t\t{\n\t\t\t\"latency\":5000,\n\t\t\t\"jitter\":0\n\t\t}\n}"
+				},
+				"url": {
+					"raw": "http://192.168.99.100:8474/proxies/minioProxy1/toxics/latency",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"99",
+						"100"
+					],
+					"port": "8474",
+					"path": [
+						"proxies",
+						"minioProxy1",
+						"toxics",
+						"latency"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

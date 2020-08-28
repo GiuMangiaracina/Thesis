@@ -1,0 +1,71 @@
+version: '2.2'
+services:
+  minio:
+    image : "minio/minio"
+    container_name : minio
+    environment:
+      - "MINIO_ACCESS_KEY=minio"
+      - "MINIO_SECRET_KEY=minio123"
+    
+    command: server /data
+    ports: 
+      - "9000:9000"
+    stdin_open : true
+
+    tty : true
+    
+  
+  toxiproxy:
+           image : "shopify/toxiproxy"
+           container_name : toxiproxy
+           network_mode: host
+           ports:
+            - "8000:8000"
+           
+  spark1:
+        build : ./spark1/
+
+        ports: 
+          - "4040:4040"
+                 
+        network_mode: host
+
+        stdin_open : true
+
+        tty : true
+        
+        container_name : spark1
+        #command: python /usr/spark-2.4.1/bin/init.py ; /bin/bash
+  
+  spark2:
+        build : ./spark2/
+
+        ports: 
+          - "4041:4041"
+                 
+        network_mode: host
+
+        stdin_open : true
+
+        tty : true
+
+        container_name : spark2
+        
+        #command: python /usr/spark-2.4.1/bin/init.py ; /bin/bash
+  spark3:
+        build : ./spark3/
+
+        ports: 
+          - "4042:4042"
+                 
+        network_mode: host
+
+        stdin_open : true
+
+        tty : true
+        
+      
+        
+        
+        container_name : spark3
+       
