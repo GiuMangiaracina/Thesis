@@ -1,0 +1,10 @@
+{
+    "name": "latency",
+    "type": "latency",
+    "stream": "downstream",
+    "toxicity": 1.0,
+    "attributes": {
+        "latency": 0,
+        "jitter": 0
+    }
+}

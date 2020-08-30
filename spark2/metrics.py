@@ -2,7 +2,7 @@ import numpy as np
 import math
 
 
-#variables for data consistency
+#variables for data consistency: k = max number of copies;
 k=2
 dc=1
 
@@ -11,17 +11,20 @@ w1=0.7
 w2=0.3
 
 
-# metric class
+# metric class: min = minimum value; max = maximum value ;
+# type = 0 if Qos positive metric, 1 if QoS negative metric;
+# status : 1 = OK, 0 = violated; ro = selected rho parameter.
 class Metric:
-  #type= 0 if Qos positive metric, 1 if QoS negative metric
-  #status : 1=OK, 0 = violated
+
   def __init__(self,min,max,type,ro):
     self.min = min
     self.max = max
     self.type = type
     self.ro = ro
 
-#instantiate metrics
+
+# instantiate metrics-> requirements. Nb: in check function are checked only the metrics
+# belonging to user requirements.
 response_time = Metric(0,30,1,40)
 latency = Metric(0,1600,1,2000)
 execution_time = Metric(0,30,1,15)

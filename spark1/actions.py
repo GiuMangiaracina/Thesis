@@ -9,9 +9,11 @@ reload(db)
 c_id = 1
 
 
-# action class. id= identifier of the action. source= node from which the data are moved/copied . destination=target node where data are moved/copied. Type= type of action. Description= description of the action. Delay= mean distance
 
 
+#Node class. id = identifier of the node; disk = availability of the node to host the data set
+#-> it is used to block actions; availability= mean availability of the node;
+#mean delay = mean latency from the node in which the app is placed (1), and the specific node
 class Node:
     def __init__(self, id, disk, availability, mean_delay):
         self.id = id
@@ -19,7 +21,10 @@ class Node:
         self.availability = availability
         self.mean_delay = mean_delay
 
-
+#action class. id= identifier of the action. source= node from which the data are moved/copied .
+#destination=target node where data are moved/copied. Type= type of action.
+# Description= description of the action. Delay = mean distance; impacts = vector of impacts;
+#name_file = name of the vector file; cost=cost of the action.
 class Action:
 
     def __init__(self, id, source, destination, type, description, delay, impacts, name_file, cost):
@@ -37,7 +42,7 @@ class Action:
 def classmethod(CR_Action):
     pass
 
-
+#Change Reference copy class action. id_data_set = id of the associated data set
 class CR_Action(Action):
     def __init__(self, id_data_set, id, source, destination, type, description, delay, impacts, name_file, cost):
         self.id_data_set = id_data_set
@@ -57,25 +62,24 @@ class CR_Action(Action):
     def update_vector(cls,string):
         cls.impacts = np.loadtxt(string, delimiter=",")
 
-# list of available nodes in the net. fields: id, disk space,availability,mean delay from node 1
-
+# list of available nodes in the net.
 N1 = Node(1, 1, db.get_availability(1), db.get_latency(1, 1))
 N2 = Node(2, 1, db.get_availability(2), db.get_latency(1, 2))
 N3 = Node(3, 1, db.get_availability(3), db.get_latency(1, 3))
 
+node_list = [N1, N2, N3]
+#id of the reference copy of the application
 data_set_id = 1
 # reference node
 state = Node(0, 0, 0, 0)
 
-node_list = [N1, N2, N3]
-
-# costs, metadata associated to action type
+# costs, metadata associated to action type (1)+ monetary cost ($/GB)
 cost_m = 1.5
 cost_d = 1.8
 cost_cr = 1
 
 # list of actions for node 1
-# Move actions
+# Movement actions
 M12 = Action(0, N1, N2, "move", "move data from node 1 (locally) to node 2", N2.mean_delay,
              np.loadtxt("IM12.txt", delimiter=","), "IM12.txt", cost_m)
 M21 = Action(1, N2, N1, "move", "move data from node 2 to node 1 (locally)", N1.mean_delay,
@@ -103,7 +107,7 @@ C32 = Action(10, N3, N2, "copy", "copy data from node 3 to node 2", N2.mean_dela
 C23 = Action(11, N2, N3, "copy", "copy data from node 2 to node 3 ", N3.mean_delay,
              np.loadtxt("IC23.txt", delimiter=","), "IC23.txt", cost_d)
 
-# Change reference copy actions
+# Change Reference copy actions
 
 CR1 = CR_Action(0, 13, state, N1, "change reference copy", "change reference copy,to a copy hosted in node 1 (local copy)",
                 N1.mean_delay,np.loadtxt("ICR1.txt", delimiter=","), "ICR1.txt", cost_cr)
@@ -117,7 +121,7 @@ NA = Action(12, 0, 0, "null", "Do Nothing", 0, [0, 0, 0, 0, 0], " ", 1)
 # action list containing all possible actions
 action_list = [M12, M21, M13, M31, M32, M23, C12, C21, C13, C31, C32, C23]
 
-
+#method used to update the value of the impacts at run-time
 def update_impacts():
     global M12,M21,M13,M31,M32,M23,C12,C21,C13,C31,C32,C23
 
@@ -145,13 +149,13 @@ def update_state(node):
     state.availability = db.get_availability(node.id)
     state.mean_delay = db.get_latency(1, node.id)
 
-
+#method which retuns the actual state
 def get_state():
     global state
 
     return state
 
-
+#method used to update the actual data set id
 def update_data_set(n):
     global data_set_id
     data_set_id = n

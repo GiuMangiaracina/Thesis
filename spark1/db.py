@@ -8,21 +8,20 @@ T = 210
 N = 3
 threshold = 0.3
 
-connection = pymysql.connect(host='192.168.1.13', user='dock', port=3306, password='giulia', db='db',autocommit=True)
-
-
+# create connection to connect to the database
+connection = pymysql.connect(host='192.168.1.13', user='dock', port=3306, password='giulia', db='db', autocommit=True)
 
 # method used to insert action event on db
-def insert_action(action,random):
+def insert_action(action, random):
     global connection
     cur = connection.cursor()
     sql1 = "INSERT INTO events (data_source,action,time_stamp,feedback_1,feedback_2,feedback_3,active,controller_id,random) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)";
     t = int(time())
     print ("time_stamp:" + str(t))
     if action.id != 12:
-        s = (actions.data_set_id, action.id, t, 0, 0, 0, 1, actions.c_id,random)
+        s = (actions.data_set_id, action.id, t, 0, 0, 0, 1, actions.c_id, random)
     else:
-        s = (actions.data_set_id, action.id, t, 0, 0, 0, 0, actions.c_id,random)
+        s = (actions.data_set_id, action.id, t, 0, 0, 0, 0, actions.c_id, random)
     cur.execute(sql1, s)
     connection.commit()
     sql2 = "SELECT LAST_INSERT_ID()"
@@ -33,8 +32,8 @@ def insert_action(action,random):
     return r
 
 
-# method used to close temporal window on db after T is expired
-# delayed function
+# methods used to close temporal window on db after T is expired
+# (delayed function)
 def close_t(event_id):
     global connection
     cur = connection.cursor()
@@ -43,9 +42,10 @@ def close_t(event_id):
     cur.execute(sql, r)
     connection.commit()
     print ("\n")
-    print("CLOSED T of event "+str(event_id))
+    print("CLOSED T of event " + str(event_id))
     update_counter(event_id)
     cur.close()
+
 
 def close_T(event_id):
     global T
@@ -60,15 +60,15 @@ def feedback(t_viol):
     global connection, T
     cur = connection.cursor()
     sql = "select * from events where active = 1 and controller_id != %s and action != 12 and data_source= %s "
-    cur.execute(sql, (actions.c_id,actions.data_set_id))
+    cur.execute(sql, (actions.c_id, actions.data_set_id))
     rows = cur.fetchall()
     for row in rows:
         ts = row[3]
         id = row[0]
         # compute negative feedback
         p = 1 - ((t_viol - ts) / T)
-        #se !=0
-        # write negative feedback
+
+        # write negative feedback into event entry
         sql1 = "update events set feedback_1 = %s where id = % s and feedback_1 = 0"
         r = (p, id)
         cur.execute(sql1, r)
@@ -77,6 +77,7 @@ def feedback(t_viol):
         print("FEEDBACK LEFT: " + str(p))
         print ("\n")
     cur.close()
+
 
 # method used to read global counter
 def read_counter(action):
@@ -94,6 +95,7 @@ def read_counter(action):
 def update_counter(event_id):
     global connection, N, threshold
     cur = connection.cursor()
+
     # compute global feedback
 
     sql = "select feedback_1,feedback_2,feedback_3,action from events where id=%s "
@@ -102,7 +104,7 @@ def update_counter(event_id):
     row = cur.fetchone()
 
     global_feedback = (row[0] + row[1] + row[2]) / (N - 1)
-    global_feedback=truncate(global_feedback,2)
+    global_feedback = truncate(global_feedback, 2)
 
     print("global feedback: " + str(global_feedback))
 
@@ -136,6 +138,8 @@ def update_counter(event_id):
             print ("counter not updated (0)")
 
     cur.close()
+
+
 # method used to update the position of a data set
 def update_data(id, node):
     global connection
@@ -146,13 +150,13 @@ def update_data(id, node):
     connection.commit()
     cur.close()
 
+
 # method used to retrieve the position of a data set
 def set_data(id):
     global connection
     cur = connection.cursor()
     sql = "select node from file_table where data_set = % s"
     s = (id)
-
 
     cur.execute(sql, s)
     connection.commit()
@@ -172,9 +176,11 @@ def add_data(id):
 
     sql1 = "SELECT LAST_INSERT_ID()"
     cur.execute(sql1)
-    r= cur.fetchone()[0]
+    r = cur.fetchone()[0]
     cur.close()
     return r
+
+#this method returns the file_table content
 def lookup_data():
     global connection
     cur = connection.cursor()
@@ -198,6 +204,7 @@ def lock_computation():
     print ("resource acquired")
     cur.close()
 
+
 # method used to unlock the computation
 def unlock_computation():
     global connection
@@ -208,6 +215,7 @@ def unlock_computation():
     print ("resource released")
     cur.close()
 
+
 # method used to check the status of the computation (lock)
 def check_computation():
     global connection
@@ -216,13 +224,11 @@ def check_computation():
     cur.execute(sql)
     connection.commit()
 
-    r=cur.fetchone()[0]
+    r = cur.fetchone()[0]
     cur.close()
     return r
 
 # method used to update the availability of a given node
-
-
 def update_availability(node_id, value):
     global connection
     cur = connection.cursor()
@@ -231,10 +237,7 @@ def update_availability(node_id, value):
     cur.execute(sql, s)
     connection.commit()
     cur.close()
-
 # method used to retrieve the availability value of a given node
-
-
 def get_availability(node_id):
     global connection
     cur = connection.cursor()
@@ -242,10 +245,11 @@ def get_availability(node_id):
     s = (node_id)
     cur.execute(sql, s)
     connection.commit()
-    r= cur.fetchone()[0]
+    r = cur.fetchone()[0]
     cur = connection.cursor()
     return r
 
+#method used to count the number of existing copies of a data set
 def check_dc():
     global connection
     cur = connection.cursor()
@@ -253,11 +257,11 @@ def check_dc():
     s = (actions.data_set_id)
     cur.execute(sql, s)
     connection.commit()
-    r= cur.fetchone()[0]
+    r = cur.fetchone()[0]
     cur.close()
     return r
 
-
+#this method returns the latency from a node with id =c_id and the node with id node_id
 def get_latency(c_id, node_id):
     global connection
     cur = connection.cursor()
@@ -265,22 +269,25 @@ def get_latency(c_id, node_id):
     s = (node_id, c_id)
     cur.execute(sql, s)
     connection.commit()
-    r= cur.fetchone()[0]
+    r = cur.fetchone()[0]
     return r
 
-def update_latency(node_id,node_target,value):
+#this method updates the latency from a node with id =c_id and the node with id node_id
+def update_latency(node_id, node_target, value):
     global connection
     cur = connection.cursor()
 
     sql = "update latency set value = %s where c_id=%s and node=%s"
-    s = (value, node_id,node_target)
+    s = (value, node_id, node_target)
     cur.execute(sql, s)
     connection.commit()
     cur.close()
 
+
 def truncate(number, digits) -> float:
     stepper = 10.0 ** digits
     return math.trunc(stepper * number) / stepper
+
 
 if __name__ == "__main__":
     __main__()

@@ -11,11 +11,11 @@ import actions
 import delta
 import db
 
-# weights
+# initial weights
 w_1 = 1
 w_2 = 1
 
-# global status metrics
+# variables indicating the status of metrics: 1 = satisfied, 0 = not satisfied
 response_time_status = 1
 latency_status = 1
 execution_time_status = 1
@@ -27,7 +27,9 @@ dc_status = 1
 
 penalty_factor = 0.33
 
-block=0
+block = 0
+
+
 # this method initializes the application. It adds the proxy, add the toxicity of type latency to it, and finally it starts the history server
 def init():
     print("Initializing")
@@ -61,21 +63,18 @@ def modify(n):
         json.dump(json_content, jsonfile, indent=4)
     subprocess.call(["./modify.sh"])
 
-    # method used to truncate floats
-
-
+# method used to truncate floats
 def truncate(number, digits) -> float:
     stepper = 10.0 ** digits
     return math.trunc(stepper * number) / stepper
 
-
-# update status of each metric. n = the node in which the data resides.
+# this method checks the status of each metric compared to the user requirements. n = the node in which the data resides
 def check(RT, ET, X, NL, n):
     available_actions = [actions.NA]
     list = []
-    rand=0
+    rand = 0
 
-    global latency_status, execution_time_status, throughput_status, availability_status, response_time_status, dc_status, w_1, w_2,block
+    global latency_status, execution_time_status, throughput_status, availability_status, response_time_status, dc_status, w_1, w_2, block
 
     if RT > metrics.response_time.max:
         response_time_status = 0
@@ -99,9 +98,6 @@ def check(RT, ET, X, NL, n):
     else:
         latency_status = 1
 
-    # associates availability to node
-    # for x in actions.node_list:
-    #   if x.id == n:
     availability = actions.state.availability
 
     if availability < metrics.availability.min:
@@ -114,161 +110,173 @@ def check(RT, ET, X, NL, n):
         dc_status = 0
     else:
         dc_status = 1
+
+    #print the user goal. only the metrics belonging to the user goal are printed.
     print ("\n")
     print ("Metric status: " + "\n")
-    print ("user goal: DC > "+str(metrics.d_c.min)+" OR NL <= "+str(metrics.latency.max)+" ms")
+    print ("user goal: DC > " + str(metrics.d_c.min) + " OR NL <= " + str(metrics.latency.max) + " ms")
     print("\n")
-    #print("response time : " + str(response_time_status))
+    # print("response time : " + str(response_time_status))
     print ("latency : " + str(latency_status))
-    #print("execution time : " + str(execution_time_status))
-    #print("throughput : " + str(throughput_status))
-   # print ("availability: " + str(availability_status))
+    # print("execution time : " + str(execution_time_status))
+    # print("throughput : " + str(throughput_status))
+    # print ("availability: " + str(availability_status))
     print("data consistency : " + str(dc_status))
     print ("\n")
 
-    # Goal
+    # Goal check
     if not (dc_status or latency_status):
+
         # leave negative feedback
         tsViol = int(time.time())
 
+        # the while below prevents cases in which there are two
+        # simultaneous actions on the same data set.
         while db.check_computation():
             print ("another controller is moving the data_set: wait execution time.")
-            block=1
+            block = 1
 
-        if block==1:
-            block=0
+        if block == 1:
+            block = 0
             return 0
 
-        block=0
+        block = 0
         db.feedback(tsViol)
-        # start action selection process->create available action list
+
+        # start action selection process:create available action list
         actions.update_impacts()
         for a in actions.action_list:
             if a.source.id == n.id and a.destination.disk == 1:
                 available_actions.append(a)
 
-
-
             else:
                 pass
+
+        # add available change reference actions to the action list
         list = instantiate_cr_actions()
         available_actions.extend(list)
         random.shuffle(available_actions)
         print ("Goal violated.Repair Action needed. Available actions: " + "\n")
 
+        # draw a number between 0 and 1
         z = random.uniform(0, 1)
 
+        #explore
         if z > 0.9:
             selected = random.choice(available_actions)
             print ("Random action selected")
-            rand=1
+            rand = 1
+        #exploit
         else:
 
             max = -2
             for b in available_actions:
-
-
-                neg_dc=0
+                # retrieve from the impacts associated to the actions
+                # the effects on the latency and dc
+                neg_dc = 0
 
                 nl = b.impacts[3]
-                dc=b.impacts[5]
-
-
+                dc = b.impacts[5]
 
                 if dc < 0:
-                    neg_dc=dc
+                    neg_dc = dc
                     w_1 = metrics.w1
                     w_2 = metrics.w2
 
-
-
+                #handle the cases: OR ->restore the latency
                 if latency_status == 0:
+                    # compute score (internal impact)
                     score = (w_1 * nl + w_2 * neg_dc) / b.cost
 
-
-
                     score = truncate(score, 2)
-
-                    # compute score_p
-
+                    # read counter from db (external impact)
                     c = db.read_counter(b)
-
+                    #compute global score
                     score_p = score * (1 - penalty_factor * c)
-
 
                 print (str(b.description) + ". Internal score: " + str(score) + "; Global score_p:" + str(score_p))
 
                 if score_p > max:
                     max = score_p
                     selected = b
-                w_1=1
-                w_2=1
+                w_1 = 1
+                w_2 = 1
 
         print("\n" + "Selected action: " + str(selected.description))
-        event_id = db.insert_action(selected,rand)
+        #insert selected action into event table
+        event_id = db.insert_action(selected, rand)
 
         print(str(event_id))
+        #12 = id of null action; call the method which will close the feedback process after T
         if selected.id != 12:
             db.close_T(event_id)
 
-        # update position of data set
+
         if selected.type == "move":
+            # update position of data set
             db.update_data(actions.data_set_id, selected.destination.id)
+            # update position of data set
             db.lock_computation()
             time.sleep(10)
             db.unlock_computation()
 
         elif selected.type == "copy":
             data_set_id = db.add_data(selected.destination.id)
+            #update application reference data set id
             actions.update_data_set(data_set_id)
 
         elif selected.type == "change reference copy":
+            #update application reference data set id
             actions.update_data_set(selected.id_data_set)
 
-
         if selected.id != 12:
+            #retrieve data set position
             n = db.set_data(actions.data_set_id)
 
             availability_old_state = actions.get_state().availability
-
+            #update state
             actions.set_state(n)
 
             RT2, ET2, X2, NL2 = computation_2(actions.state)
 
-            delta.delta(RT, ET, X, NL, availability_old_state, RT2, ET2, X2, NL2, actions.state.availability,selected)
+            delta.delta(RT, ET, X, NL, availability_old_state, RT2, ET2, X2, NL2, actions.state.availability, selected)
 
-            p=check(RT2, ET2, X2, NL2, actions.state)
+            p = check(RT2, ET2, X2, NL2, actions.state)
 
     else:
         print ("Goal not violated.")
 
     return 1
+
+
 # Method used to start a computation. n = the node in which the data resides
 def computation(n):
+    #m = latency, calculated with a normal distribution of mean retrieved from the reference node
     m = int(round(np.random.normal(n.mean_delay, 7)))
     if m <= 0:
         m = 0
-
+    #change latency of the proxy
     modify(m)
     print("\n")
+    #launch the spark application
     subprocess.call(["./app.sh"])
     time.sleep(1)
 
     # retrieve the metrics of the completed computation from the monitoring program
     RT, ET, X, NL = monitoring.main()
+    #check the number of the copies existing in the environment
     copies_number = db.check_dc()
+    #update dc metric
     metrics.update_dc(copies_number)
     print ("data consistency: " + str(metrics.dc))
     print ("availability: " + str(actions.state.availability) + " %")
     # check the status of the metrics
-    r=check(RT, ET, X, NL,n)
+    r = check(RT, ET, X, NL, n)
 
-    if r==0:
+    if r == 0:
         print ("restart computation with updated position of data set.")
 
-
         return 0
-
 
     return 1
 
@@ -296,23 +304,22 @@ def computation_2(n):
 
 
 def __main__():
+    #check if the application has been initialized -> needed only for the first time
     with open('goal.json', 'r') as jsonfile:
         json_content = json.load(jsonfile)
     if json_content['initialized'] == 0:
         init()
     else:
-
-
-
+        #infinite loop which start the computation
         while 1:
-              x =int(round(np.random.normal(15, 2)))
-              if x<0:
-                 x=0
-                 time.sleep(x)
+            #arrival rate
+            x = int(round(np.random.normal(15, 2)))
+            if x < 0:
+                x = 0
+                time.sleep(x)
 
-              print ("Start APP 3;")
-              setting()
-
+            print ("Start APP 3;")
+            setting()
 
 
 # method used to lookup the file_table in order to set the position of data and map to node
@@ -320,12 +327,13 @@ def setting():
     n = db.set_data(actions.data_set_id)
 
     actions.set_state(n)
-    print("reference copy id: "+ str(actions.data_set_id))
-    code=computation(actions.state)
+    print("reference copy id: " + str(actions.data_set_id))
+    code = computation(actions.state)
 
-    if code==0:
+    if code == 0:
         ("computation returned with code 0 ")
-    
+
+#method used to instantiate at run-time the available CR actions
 def instantiate_cr_actions():
     list = []
     CR_actions = [actions.CR1, actions.CR2, actions.CR3]
@@ -336,9 +344,9 @@ def instantiate_cr_actions():
         if row[0] != actions.data_set_id and row[1] != actions.state.id:
             for a in CR_actions:
                 if row[1] == a.destination.id:
-
                     a.set_data_set(row[0])
-                    string = 'IM'+ str(source_node)+str(a.destination.id)+'.txt'
+                    #derive impacts from associated movement actions
+                    string = 'IM' + str(source_node) + str(a.destination.id) + '.txt'
                     a.update_vector(string)
                     list.append(a)
 
