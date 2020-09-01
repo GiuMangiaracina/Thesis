@@ -4,7 +4,7 @@ APP 1                     RT       A (%)              Req. met (Y/N)
  
 First computation:     41.379 s    80                 N
 
-last computation:       20.144 s     97                 Y  
+last computation:       20.144 s     97                Y  
 
 User 2, Goal : Throughput >= 30000 n/s AND  AND Availability >= 80 %
  
@@ -12,7 +12,7 @@ APP 2                     X       A (%)               Req. met (Y/N)
 
 First computation:     60089.96 n/s     80                 Y
 
-last computation:     64237.7 n/s     80                 Y
+last computation:     64237.7 n/s     80                   Y
 
 
 User 3, Goal : Data Consistency > 0.7 OR Network Latency <= 1300 ms

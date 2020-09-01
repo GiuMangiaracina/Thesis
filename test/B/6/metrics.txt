@@ -12,7 +12,7 @@ APP 2                     X       A (%)               Req. met (Y/N)
 
 First computation:    64178.14 n/s    80                 Y
 
-last computation:     57854.87 n/s  80                 Y
+last computation:     57854.87 n/s  80                   Y
 
 
 User 3, Goal : Data Consistency > 0.7 OR Network Latency <= 1300 ms

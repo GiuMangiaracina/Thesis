@@ -4,7 +4,7 @@ APP 1                     RT       A (%)              Req. met (Y/N)
 
 First computation:       44.421 s     80                 N
 
-last computation:         30.018 s   97                 Y  
+last computation:        30.018 s    97                  Y  
 
 User 2, Goal : Throughput >= 30000 n/s AND  AND Availability >= 80 %
  

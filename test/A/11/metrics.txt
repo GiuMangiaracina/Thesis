@@ -21,5 +21,5 @@ APP 3                     DC      NL               Req. met (Y/N)
 
 First computation:        1      1492                 Y 
 
-last computation:         0       0 ms                 Y
+last computation:         0       0 ms                Y
 
