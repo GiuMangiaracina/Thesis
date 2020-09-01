@@ -1,0 +1,25 @@
+User 1, Goal : Response time <= 35 s AND Availability >= 95 %
+
+APP 1                     RT       A (%)              Req. met (Y/N)
+ 
+First computation:      55.19 s      85                 N
+
+last computation:       20.474 s     97                 Y  
+
+User 2, Goal : Throughput >= 30000 n/s AND  AND Availability >= 80 %
+ 
+APP 2                     X       A (%)               Req. met (Y/N)
+
+First computation:      19422.27 n/s   85                 N
+
+last computation:        62091.16 n/s  80                 Y
+
+
+User 3, Goal : Data Consistency > 0.7 OR Network Latency <= 1300 ms
+
+APP 3                     DC      NL               Req. met (Y/N)
+ 
+First computation:        1        0 ms         Y 
+
+last computation:        0.5       1194         Y
+
