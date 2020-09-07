@@ -25,7 +25,7 @@ class Metric:
 # instantiate metrics-> requirements. Nb: in check function are checked only the metrics
 # belonging to user requirements.
 response_time = Metric(0, 50, 1, 40)
-latency = Metric(0, 1250, 1, 2000)
+latency = Metric(0, 1300, 1, 2000)
 execution_time = Metric(0, 30, 1, 15)
 
 throughput = Metric(1000, 0, 0, 3000)
