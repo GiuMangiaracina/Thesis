@@ -7,7 +7,7 @@ Through the proposed algorithm, the applications apply distributed control, in o
 - for Linux users, xterm installed (to install it, type 'sudo apt-get install xterm' in the terminal.).
 - for Windows users which use Docker Toolbox (legacy solution for Windows versions different from Windows 10 Professional and Enterprise 64-bit):
  1. determine the IP of your Docker virtual machine by running: 'docker-machine ip' after starting docker;
- 2. start Oracle VM VirtualBox, locate the Docker virtual machine (usually named 'default') and select settings-> Network->Adapter1 (NAT) -> Advanced -> Portforwarding and add the following rules (substitute the guest Ip field with your docker machine ip):
+ 2. start Oracle VM VirtualBox; locate the Docker virtual machine (usually named 'default'); select settings-> Network->Adapter1 (NAT) -> Advanced -> Portforwarding, then add the following rules (substitute the 'guest Ip' field with your docker-machine ip):
  ![](https://github.com/GiuMangiaracina/Thesis/blob/master/ports.JPG)
  
 ## Instructions : 
