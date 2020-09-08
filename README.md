@@ -14,8 +14,8 @@ Execute the following instructions in order.
 - extract in the working directory the compressed file  'file1.rar'.
 ### Database setup
 1. move into  db directory. For Linux users, login as root user typing 'sudo su' at the terminal;
-2. type 'docker-compose build';
-3. type 'docker-compose up';
+2. build the images, typing 'docker-compose build';
+3. start the containers, typing 'docker-compose up';
 4. access to mySQL php administrator web app browsing to 'https://127.0.0.1/8080';
 5. login into database using the following credentials: 
  - system = MySql;
@@ -23,13 +23,13 @@ Execute the following instructions in order.
  - username = root;
  - password = helloworld;
  - database = db;
-6. import the database, clicking on Import-> File Upload -> Browse and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute'.
+6. import the database, clicking on Import-> File Upload -> Browse, and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute'.
 ### Program setup
-In program diretory:
-1. type 'docker-compose build';
-2. type 'docker-compose up'.
+In program directory:
+1. build the containers, typing 'docker-compose build';
+2. start the containers, typing 'docker-compose up'.
 ### minIO setup
-1. Browse to 'https://127.0.0.1/9000' and login using the following credentials: 
+1. Browse to 'https://127.0.0.1/9000', and login into minIO server instance using the following credentials: 
 - username = minio;
 - password = minio123 .
 2. load the json file: click on the '+' button, below; create a bucket named 'miniobucket'; load the extracted file 'file1.json' into the bucket just created.
