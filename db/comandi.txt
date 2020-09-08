@@ -1,5 +1,0 @@
-connection = pymysql.connect(host='127.0.0.1', user='root', port=3308, password='helloworld', db='testapp', autocommit=True)
-
-
-
-http://127.0.0.1:8080/
