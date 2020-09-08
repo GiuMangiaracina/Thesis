@@ -12,7 +12,7 @@ Execute the following instructions in order.
 
 - Clone this repository to your working directory typing 'git clone https://github.com/GiuMangiaracina/Thesis';
 - extract in the working directory the compressed file  'file1.rar'.
-### Database setup
+### Database setup (mySQL server + phpMyAdmin )
 1. move into  db directory. For Linux users, login as root user typing 'sudo su' at the terminal;
 2. build the images, typing 'docker-compose build';
 3. start the containers, typing 'docker-compose up';
@@ -28,7 +28,7 @@ Execute the following instructions in order.
 In program directory:
 1. build the containers, typing 'docker-compose build';
 2. start the containers, typing 'docker-compose up'.
-### minIO setup
+### minIO server setup
 1. Browse to 'https://127.0.0.1/9000', and login into minIO server instance using the following credentials: 
 - username = minio;
 - password = minio123 .
