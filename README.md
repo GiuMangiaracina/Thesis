@@ -10,8 +10,8 @@ Through the proposed algorithm, the applications apply distributed control, in o
  2. start Oracle VM VirtualBox; locate the Docker virtual machine (usually named 'default'); select settings-> Network->Adapter1 (NAT) -> Advanced -> Portforwarding, then add the following rules (substitute the 'guest Ip' field with your docker-machine ip):
  ![](https://github.com/GiuMangiaracina/Thesis/blob/master/ports.JPG)
  
-## Instructions : 
-Execute the following instructions in order.
+## Installation : 
+Execute all the following instructions, in order.
 
 - clone this repository to your working directory typing 'git clone https://github.com/GiuMangiaracina/Thesis';
 - extract in the working directory the compressed file  'file1.rar'.
