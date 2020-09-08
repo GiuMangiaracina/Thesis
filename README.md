@@ -19,7 +19,7 @@ Execute all the following instructions, in order.
 1. move into  db directory. For Linux users, login as root user typing 'sudo su' at the terminal;
 2. build the images, typing 'docker-compose build';
 3. start the containers, typing 'docker-compose up';
-4. access to phpMyAdmin web app browsing to 'https://127.0.0.1/8080';
+4. access to phpMyAdmin web app browsing to 'http://127.0.0.1/8080';
 5. login into database using the following credentials: 
  - system = MySql;
  - server = mysql-development;
@@ -33,7 +33,7 @@ In the program directory:
 1. build the containers, typing 'docker-compose build';
 2. start the containers, typing 'docker-compose up'.
 ### minIO server setup
-1. Browse to 'https://127.0.0.1/9000', and login into minIO server instance using the following credentials: 
+1. Browse to 'http://127.0.0.1:9000', and login into minIO server instance using the following credentials: 
 - username = minio;
 - password = minio123 .
 2. load the json file: click on the '+' button, below; create a bucket named 'miniobucket'; load the extracted file 'file1.json' into the bucket just created.
@@ -44,7 +44,12 @@ In the program directory:
 - for Windows users: execute 'start_win.cmd';
 - for Linux users: 
 1. execute 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
-2. execute 'start.sh'.
+2. execute 'start.sh' and wait until its completion.
+
+After this initialization, the Spark History Servers of the three applications are accessible at the following addresses:
+- 'http://127.0.0.1:18080' (spark1)
+- 'http://127.0.0.1:18081' (spark2)
+- 'http://127.0.0.1:18082' (spark3)
 ## Usage (this command starts the system, and execute in parallel the computations.)
 In the program directory, rerun the following command:
 - for Windows users:
