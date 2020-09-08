@@ -44,7 +44,7 @@ In the program directory:
 - for Linux users: 
 1. execute 'permission.sh'
 2. execute 'start.sh'.
-## Usage (this command starts the system, executeing in parallel the computations.)
+## Usage (this command starts the system, and executes in parallel the computations.)
 In the program directory:
 - for Windows users:
 execute 'start_win.cmd';
