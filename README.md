@@ -29,14 +29,14 @@ In program diretory:
 - password = minio123 .
 2. load the json file: click on the '+' button, below; create a bucket named 'miniobucket'; load the extracted file 'file1.json' into the bucket just created.
 
-## Initialization (this command initializes the proxies and the history servers.)
-
+### Initialization (this command initializes the proxies and the history servers.)
 In program directory:
+
 - for Windows users: execute 'start_win.cmd';
 - for Linux users: execute 'start.sh'.
-## Usage (this command executes in parallel the three computations.)
-- In program directory:
-for Windows users:
+### Usage (this command executes in parallel the three computations.)
+In program directory:
+- for Windows users:
 execute 'start_win.cmd';
 - for Linux users:
 execute 'start.sh' .
