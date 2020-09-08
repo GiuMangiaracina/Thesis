@@ -1,8 +1,8 @@
 This system simulates a distributed network of resources, on which are running applications consuming data (DaaS) relying on the same data source. Through the proposed algorithm, the applications apply distributed control, in order to guarantee their QoS requirements at run-time, in response to requirements violations.
 ## Prerequisities:
 - A working Docker installation (for 64-bit systems);
-- docker-compose installed  (to install it on Linux systems, type 'sudo apt install docker-compose' in the terminal.)
-- for Linux users, xterm installed (to install it, type 'sudo apt-get install xterm' in the terminal.)
+- docker-compose installed  (to install it on Linux systems, type 'sudo apt install docker-compose' in the terminal.);
+- for Linux users, xterm installed (to install it, type 'sudo apt-get install xterm' in the terminal.).
 - for Windows users using Docker Toolbox (legacy solution for Windows versions different from Windows 10 Professional and Enterprise 64-bit.):
  1. determine the IP of your Docker virtual machine by running: 'docker-machine ip' after starting docker;
  2. start Oracle VM VirtualBox, locate the Docker virtual machine (usually named 'default') and select settings-> Network->Adapter1 (NAT) -> Advanced -> Portforwarding and add the following rules (substitute the guest Ip field with your docker machine ip):
@@ -17,7 +17,7 @@ Execute the following instructions in order.
 1. move into  db directory. For Linux users, login as root user typing 'sudo su' at the terminal;
 2. build the images, typing 'docker-compose build';
 3. start the containers, typing 'docker-compose up';
-4. access to mySQL php administrator web app browsing to 'https://127.0.0.1/8080';
+4. access to phpMyAdmin web app browsing to 'https://127.0.0.1/8080';
 5. login into database using the following credentials: 
  - system = MySql;
  - server = mysql-development;
