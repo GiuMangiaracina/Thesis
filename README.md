@@ -1,4 +1,3 @@
-# Thesis
 This system simulates a distributed network of resources, on which are running applications consuming data (DaaS) relying on the same data source. Through the proposed algorithm, the applications apply distributed control, in order to guarantee their QoS requirements at run-time, in response to requirements violations.
 ## Prerequisities:
 - A working Docker installation;
