@@ -42,9 +42,9 @@ In the program directory:
 
 - for Windows users: execute 'start_win.cmd';
 - for Linux users: 
-1. execute 'permission.sh'
+1. execute 'permission.sh' (needed to give the permissions to excute the files in the directory)
 2. execute 'start.sh'.
-## Usage (this command starts the system, and executes in parallel the computations.)
+## Usage (these commands start the system, and execute in parallel the computations.)
 In the program directory:
 - for Windows users:
 execute 'start_win.cmd';
