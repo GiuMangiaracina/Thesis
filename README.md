@@ -26,7 +26,8 @@ Execute all the following instructions, in order.
  - username = root;
  - password = helloworld;
  - database = db;
-6. import the database, clicking on Import-> File Upload -> Browse, and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute'.
+6. import the database, clicking on Import-> File Upload -> Browse, and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute':
+7. eventually apply any edits to the initial configuration, editing the tables of the database.
 ### Program setup
 In the program directory:
 1. build the containers, typing 'docker-compose build';
