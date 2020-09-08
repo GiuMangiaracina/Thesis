@@ -1,4 +1,6 @@
-This system simulates a distributed network of resources, on which are running applications consuming data (DaaS) relying on the same data source. Through the proposed algorithm, the applications apply distributed control, in order to guarantee their QoS requirements at run-time, in response to requirements violations.
+This system simulates a distributed network of resources, on which are running applications consuming data (DaaS) relying on the same data source.
+The computations consist in Spark applications, which calculate the average value of a field of the provided data set. 
+Through the proposed algorithm, the applications apply distributed control, in order to guarantee their QoS requirements at run-time, in response to requirements violations.
 ## Prerequisities:
 - A working Docker installation (for 64-bit systems);
 - docker-compose installed  (to install it on Linux systems, type 'sudo apt install docker-compose' in the terminal.);
@@ -42,7 +44,7 @@ In the program directory:
 - for Linux users: 
 1. execute 'permission.sh'
 2. execute 'start.sh'.
-## Usage (this command executes in parallel the three computations.)
+## Usage (this command starts the system, executeing in parallel the computations.)
 In the program directory:
 - for Windows users:
 execute 'start_win.cmd';
