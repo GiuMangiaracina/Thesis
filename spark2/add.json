@@ -1,6 +1,0 @@
-  {
-    "name": "minioProxy2",
-    "listen": "192.168.99.100:8001",
-    "upstream": "192.168.99.100:9000",
-    "enabled": true
-  }

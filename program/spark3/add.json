@@ -1,0 +1,6 @@
+  {
+    "name": "minioProxy3",
+    "listen": "127.0.0.1:8002",
+    "upstream": "127.0.0.1:9000",
+    "enabled": true
+  }
