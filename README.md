@@ -2,10 +2,10 @@ This system simulates a distributed network of resources, on which are running a
 The computations consist in Spark applications, which calculate the average value of a field of the provided data set. 
 Through the proposed algorithm, the applications apply distributed control, in order to guarantee their QoS requirements at run-time, in response to requirements violations.
 ## Prerequisities:
-- A working Docker installation (for 64-bit systems);
+- a working docker installation (for 64-bit systems);
 - docker-compose installed  (to install it on Linux systems, type 'sudo apt install docker-compose' in the terminal.);
 - for Linux users, xterm installed (to install it, type 'sudo apt-get install xterm' in the terminal.).
-- for Windows users using Docker Toolbox (legacy solution for Windows versions different from Windows 10 Professional and Enterprise 64-bit.):
+- for Windows users which use Docker Toolbox (legacy solution for Windows versions different from Windows 10 Professional and Enterprise 64-bit):
  1. determine the IP of your Docker virtual machine by running: 'docker-machine ip' after starting docker;
  2. start Oracle VM VirtualBox, locate the Docker virtual machine (usually named 'default') and select settings-> Network->Adapter1 (NAT) -> Advanced -> Portforwarding and add the following rules (substitute the guest Ip field with your docker machine ip):
  ![](https://github.com/GiuMangiaracina/Thesis/blob/master/ports.JPG)
