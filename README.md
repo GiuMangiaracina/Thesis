@@ -8,7 +8,7 @@
  ![](https://github.com/GiuMangiaracina/Thesis/blob/master/ports.JPG)
  
 ## Instruction : 
-Execute the following instruction in order.
+Execute the following instructions in order.
 
 - Clone this repository to your working directory typing 'git clone https://github.com/GiuMangiaracina/Thesis';
 - extract in the working directory the compressed file  'file1.rar'.
@@ -41,7 +41,7 @@ In program directory:
 - for Linux users: 
 1. execute 'permission.sh'
 2. execute 'start.sh'.
-### Usage (this command executes in parallel the three computations.)
+## Usage (this command executes in parallel the three computations.)
 In program directory:
 - for Windows users:
 execute 'start_win.cmd';
