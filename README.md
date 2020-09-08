@@ -33,10 +33,13 @@ In program diretory:
 In program directory:
 
 - for Windows users: execute 'start_win.cmd';
-- for Linux users: execute 'start.sh'.
+- for Linux users: 
+1. execute 'permission.sh'
+2. execute 'start.sh'.
 ### Usage (this command executes in parallel the three computations.)
 In program directory:
 - for Windows users:
 execute 'start_win.cmd';
 - for Linux users:
-execute 'start.sh' .
+1. execute 'permission.sh';
+2. execute 'start.sh' .
