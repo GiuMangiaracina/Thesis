@@ -41,10 +41,10 @@ In the program directory:
 ### Initialization (this command, executed for the first time, initializes the proxies and the history servers.)
 In the program directory:
 
-- for Windows users: execute 'start_win.cmd';
+- for Windows users: execute 'start_win.cmd'and wait until its completion;
 - for Linux users: 
 1. execute 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
-2. execute 'start.sh' and wait until its completion.
+2. execute 'start.sh'and wait until its completion.
 
 After this initialization, the Spark History Servers of the three applications are accessible at the following addresses:
 - 'http://127.0.0.1:18080' (spark1)
