@@ -50,7 +50,7 @@ After this initialization, the Spark History Servers of the three applications a
 - 'http://127.0.0.1:18080' (spark1)
 - 'http://127.0.0.1:18081' (spark2)
 - 'http://127.0.0.1:18082' (spark3)
-## Usage (this command starts the system, and execute in parallel the computations.)
+## Usage (this command starts the system, and execute in parallel the computations, showing them on three different terminal windows.)
 In the program directory, rerun the following command:
 - for Windows users:
 execute 'start_win.cmd';
