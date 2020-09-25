@@ -10,7 +10,11 @@ import metrics
 import actions
 import delta
 import db
+import requests
 from termcolor import colored
+import shlex
+import configparser
+
 
 block = 0
 
@@ -35,14 +39,33 @@ penalty_factor = 0.33
 def init():
     print("Initializing")
 
+
     # add proxy
+
+
+
+
+    with open('add.json', 'r') as jsonfile:
+        json_content = json.load(jsonfile)
+    json_content["name"] = "minioProxy"+str(actions.c_id)
+    json_content["listen"] = "127.0.0.1:800"+str(actions.c_id)
+
+    with open('add.json', 'w') as jsonfile:
+        json.dump(json_content, jsonfile, indent=4)
     subprocess.call(["./addProxy.sh"])
-    print("\n" + "\n" + "Proxy added")
+
     # set initial latency
     # l = int(input ("\n"+"set toxic, latency: "+"\n"))
-    subprocess.call(["./set.sh"])
-
+    subprocess.call(shlex.split('./set.sh minioProxy'+str(actions.c_id)))
     # start the history server
+
+
+
+
+
+
+
+
     os.system("../sbin/start-history-server.sh ")
 
     with open('goal.json', 'r') as jsonfile:

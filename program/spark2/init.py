@@ -11,6 +11,7 @@ import actions
 import delta
 import db
 from termcolor import colored
+import shlex
 # weights
 w_1 = 1
 w_2 = 1
@@ -33,15 +34,25 @@ block = 0
 # this method initializes the application. It adds the proxy, add the toxicity of type latency to it, and finally it starts the history server
 def init():
     print("Initializing")
-
+    
     # add proxy
+
+    with open('add.json', 'r') as jsonfile:
+        json_content = json.load(jsonfile)
+    json_content["name"] = "minioProxy"+str(actions.c_id)
+    json_content["listen"] = "127.0.0.1:800"+str(actions.c_id)
+
+    with open('add.json', 'w') as jsonfile:
+        json.dump(json_content, jsonfile, indent=4)
     subprocess.call(["./addProxy.sh"])
+
     print("\n" + "\n" + "Proxy added")
 
-    subprocess.call(["./set.sh"])
+
+    subprocess.call(shlex.split('./set.sh minioProxy'+str(actions.c_id)))
 
     # start the history server
-    time.sleep(20)
+    
     os.system("../sbin/start-history-server.sh ")
 
     with open('goal.json', 'r') as jsonfile:
