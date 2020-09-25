@@ -42,7 +42,7 @@ In the program directory:
 In the program directory:
 
 - for Windows users: execute 'start_win.cmd'and wait until its completion;
-- for Linux users: 
+- for Linux users, once logged as root user: 
 1. execute 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
 2. execute 'start.sh'and wait until its completion.
 
