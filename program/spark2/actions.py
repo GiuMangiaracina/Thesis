@@ -35,6 +35,9 @@ class Action:
         self.name_file= name_file
         self.cost = cost
 
+    def update_impacts(cls):
+        cls.impacts = np.loadtxt(cls.name_file, delimiter=",")
+
 def classmethod(CR_Action):
     pass
 
@@ -58,6 +61,8 @@ class CR_Action(Action):
     def update_vector(cls,string):
         cls.impacts = np.loadtxt(string, delimiter=",")
 
+    def update_impacts(cls):
+        cls.impacts = np.loadtxt(cls.name_file, delimiter=",")
 #list of available nodes in the net.
 N1=Node(1,1,db.get_availability(1), db.get_latency(2,1))
 N2=Node(2,1,db.get_availability(2), db.get_latency(2,2))
@@ -105,22 +110,9 @@ action_list =[M12,M21,M13,M31,M32,M23,C12,C21,C13,C31,C32,C23]
 
 #method used to update the value of the impacts at run-time
 def update_impacts():
-    global M12,M21,M13,M31,M32,M23,C12,C21,C13,C31,C32,C23
-    M12.impacts=np.loadtxt("IM12.txt", delimiter=",")
-    M21.impacts=np.loadtxt("IM21.txt", delimiter=",")
-    M13.impacts=np.loadtxt("IM13.txt", delimiter=",")
-    M31.impacts=np.loadtxt("IM31.txt", delimiter=",")
-    M32.impacts=np.loadtxt("IM32.txt", delimiter=",")
-    M23.impacts=np.loadtxt("IM23.txt", delimiter=",")
-    C12.impacts=np.loadtxt("IC12.txt", delimiter=",")
-    C21.impacts=np.loadtxt("IC21.txt", delimiter=",")
-    C13.impacts=np.loadtxt("IC13.txt", delimiter=",")
-    C31.impacts=np.loadtxt("IC31.txt", delimiter=",")
-    C32.impacts=np.loadtxt("IC32.txt", delimiter=",")
-    C23.impacts=np.loadtxt("IC23.txt", delimiter=",")
-    CR1.impacts = np.loadtxt("ICR1.txt", delimiter=",")
-    CR2.impacts = np.loadtxt("ICR2.txt", delimiter=",")
-    CR3.impacts = np.loadtxt("ICR3.txt", delimiter=",")
+    global action_list
+    for a in action_list:
+        a.update_impacts()
 
 # function used in order to update the attributes of a node
 def update_state(node):
