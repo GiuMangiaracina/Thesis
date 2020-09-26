@@ -11,26 +11,41 @@ threshold = 0.3
 # create connection to connect to the database
 connection = pymysql.connect(host='127.0.0.1', user='root', port=3308, password='helloworld', db='db', autocommit=True)
 
+# method used to add controller
+
+def get_id():
+    global connection
+    cur = connection.cursor()
+    sql="INSERT INTO controller_id VALUES()"
+
+    cur.execute(sql)
+    connection.commit()
+    sql2 = "SELECT LAST_INSERT_ID()"
+    cur.execute(sql2)
+    c = cur.fetchone()[0]
+    cur.close()
+    actions.update_c_id(c)
 
 # method used to insert action event on db
 def insert_action(action, random):
     global connection
     cur = connection.cursor()
-    sql1 = "INSERT INTO events (data_source,action,time_stamp,feedback_1,feedback_2,feedback_3,active,controller_id,random) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)";
+    sql1 = "INSERT INTO events (data_source,action,time_stamp,active,controller_id,random,action_type) VALUES (%s,%s,%s,%s,%s,%s,%s)";
     t = int(time())
     print ("time_stamp:" + str(t))
     if action.id != 12:
-        s = (actions.data_set_id, action.id, t, 0, 0, 0, 1, actions.c_id, random)
+        s = (actions.data_set_id, action.id, t, 1, actions.c_id, random,action.type)
     else:
-        s = (actions.data_set_id, action.id, t, 0, 0, 0, 0, actions.c_id, random)
+        s = (actions.data_set_id, action.id, t, 0, actions.c_id, random,action.type)
     cur.execute(sql1, s)
     connection.commit()
     sql2 = "SELECT LAST_INSERT_ID()"
     cur.execute(sql2)
     r = cur.fetchall()
-    print ("PUBLISHED EVENT, id:" + str(r))
     cur.close()
+    print ("PUBLISHED EVENT, id:" + str(r))
     return r
+
 
 
 # methods used to close temporal window on db after T is expired
@@ -59,20 +74,28 @@ def close_T(event_id):
 def feedback(t_viol):
     global connection, T
     cur = connection.cursor()
-    sql = "select * from events where active = 1 and controller_id != %s and action != 12 and data_source = %s"
+    sql = "select time_stamp,id from events where active = 1 and controller_id != %s and action != 12 and data_source= %s "
     cur.execute(sql, (actions.c_id, actions.data_set_id))
     rows = cur.fetchall()
     for row in rows:
-        ts = row[3]
-        id = row[0]
+        ts = row[0]
+        event_id = row[1]
         # compute negative feedback
         p = 1 - ((t_viol - ts) / T)
 
-        # write negative feedback
+        # write negative feedback into event entry
+
+        sql2 = "update events set sum_feedback = sum_feedback + %s  where id = % s and  feedback_3 = 0"
+        q = (p, event_id)
+        cur.execute(sql2, q)
+        connection.commit()
         sql1 = "update events set feedback_3 = %s where id = % s and feedback_3 = 0"
-        r = (p, id)
+        r = (p, event_id)
         cur.execute(sql1, r)
         connection.commit()
+
+
+
         print("FEEDBACK LEFT: " + str(p))
         print ("\n")
     cur.close()
@@ -93,20 +116,21 @@ def read_counter(action):
 def update_counter(event_id):
     global connection, N, threshold
     cur = connection.cursor()
+
     # compute global feedback
 
-    sql = "select feedback_1,feedback_2,feedback_3,action from events where id=%s "
+    sql = "select sum_feedback,action from events where id=%s "
     r = (event_id)
     cur.execute(sql, r)
     row = cur.fetchone()
 
-    global_feedback = (row[0] + row[1] + row[2]) / (N - 1)
+    global_feedback = (row[0]) / (N - 1)
     global_feedback = truncate(global_feedback, 2)
 
     print("global feedback: " + str(global_feedback))
 
     sql1 = "select value from global_counter where id=%s"
-    r = (row[3])
+    r = (row[1])
     cur.execute(sql1, r)
     value = cur.fetchone()
 
@@ -116,7 +140,7 @@ def update_counter(event_id):
     if global_feedback >= threshold:
 
         sql2 = "update global_counter set value=%s where id = %s "
-        z = (value[0] + 1, row[3])
+        z = (value[0] + 1, row[1])
         cur.execute(sql2, z)
         connection.commit()
         print ("global feedback >= fixed threshold (" + str(threshold) + ")")
@@ -124,9 +148,9 @@ def update_counter(event_id):
     else:
         if value[0] != 0:
             # decrement counter
-            print("--")
+
             sql3 = "update global_counter set value=%s where id = %s "
-            h = (value[0] - 1, row[3])
+            h = (value[0] - 1, row[1])
             cur.execute(sql3, h)
             connection.commit()
             print ("global feedback < fixed threshold (" + str(threshold) + ")")
@@ -135,7 +159,6 @@ def update_counter(event_id):
             print ("counter not updated (0)")
 
     cur.close()
-
 
 # method used to update the position of a data set
 def update_data(id, node):
@@ -250,7 +273,8 @@ def get_availability(node_id):
 def check_dc():
     global connection
     cur = connection.cursor()
-    sql = "SELECT COUNT(*) from events where data_source =%s and action >=6 and action <= 11"
+    sql = "SELECT COUNT(*) from events where data_source =%s and action_type ='copy'"
+
     s = (actions.data_set_id)
     cur.execute(sql, s)
     connection.commit()

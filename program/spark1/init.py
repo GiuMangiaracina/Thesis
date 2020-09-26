@@ -382,7 +382,7 @@ def __main__():
                 x = 0
             time.sleep(x)
             #print ("Start APP 1;")
-            print (colored("Start APP 1", 'green'))
+            print (colored("Start APP "+str(actions.c_id), 'green'))
             setting()
 
 # method used to lookup the file_table in order to set the position of data and map to node

@@ -333,7 +333,7 @@ def __main__():
                 time.sleep(x)
 
 
-            print(colored("Start APP 3;", 'green'))
+            print(colored("Start APP "+str(actions.c_id), 'green'))
             setting()
 
 

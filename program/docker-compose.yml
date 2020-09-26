@@ -19,15 +19,11 @@ services:
            image : "shopify/toxiproxy"
            container_name : toxiproxy
            network_mode: host
-           ports:
-            - "8000:8000"
            
   spark1:
         build : ./spark1/
 
-        ports: 
-          - "4040:4040"
-                 
+  
         network_mode: host
 
         stdin_open : true
@@ -40,9 +36,6 @@ services:
   spark2:
         build : ./spark2/
 
-        ports: 
-          - "4041:4041"
-                 
         network_mode: host
 
         stdin_open : true
@@ -54,9 +47,6 @@ services:
         #command: python /usr/spark-2.4.1/bin/init.py ; /bin/bash
   spark3:
         build : ./spark3/
-
-        ports: 
-          - "4042:4042"
                  
         network_mode: host
 
@@ -64,8 +54,5 @@ services:
 
         tty : true
         
-      
-        
-        
         container_name : spark3
-       
+ 
