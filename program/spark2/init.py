@@ -12,6 +12,7 @@ import delta
 import db
 from termcolor import colored
 import shlex
+import os
 # weights
 w_1 = 1
 w_2 = 1
@@ -347,7 +348,11 @@ def __main__():
     else:
 
         #generate action list
-        actions.generate_actions(actions.node_list)
+
+        c=actions.generate_actions(actions.node_list)
+        if c==0:
+            print("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE 'training.py' program.")
+            sys.exit()
 
         #infinite loop which start the computation
         while 1:

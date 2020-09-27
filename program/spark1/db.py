@@ -271,7 +271,7 @@ def get_availability(node_id):
     cur.execute(sql, s)
     connection.commit()
     r = cur.fetchone()[0]
-    cur = connection.cursor()
+
     return r
 
 #method used to count the number of existing copies of a data set
@@ -315,18 +315,26 @@ def add_node(node_id):
     # add missing latencies between nodes -> -1 to fill in manually!
     global connection
     cur = connection.cursor()
-    sql='insert into latency (node_ID,node,value) values (%s,%s,%s)'
-    s = (node_id, node_id, 0)
-    cur.execute(sql, s)
-    for a in actions.node_list:
-        sql='insert into latency (node_ID,node,value) values (%s,%s,%s)'
-        s = (node_id, a.id, -1)
-        cur.execute(sql, s)
-        sql1='insert into latency (node_ID,node,value) values (%s,%s,%s)'
-        s = (a.id,node_id, -1)
-        cur.execute(sql1, s)
 
-    connection.commit()
+    sql2 = 'SELECT COUNT(*) FROM latency WHERE node_ID = %s'
+    x =(node_id)
+    cur.execute(sql2, x)
+    m = cur.fetchone()[0]
+
+    if m == 0:
+
+        sql='insert into latency (node_ID,node,value) values (%s,%s,%s)'
+        s = (node_id, node_id, 0)
+        cur.execute(sql, s)
+        for a in actions.node_list:
+            sql='insert into latency (node_ID,node,value) values (%s,%s,%s)'
+            s = (node_id, a.id, -1)
+            cur.execute(sql, s)
+            sql1='insert into latency (node_ID,node,value) values (%s,%s,%s)'
+            s = (a.id,node_id, -1)
+            cur.execute(sql1, s)
+        connection.commit()
+    print("Node with ID "+str(node_id)+" added. Please add the node to the node list, and fill in the -1 values in the database.")
 
 
     #add availability node-> -1 to fill in

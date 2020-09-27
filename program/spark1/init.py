@@ -10,11 +10,10 @@ import metrics
 import actions
 import delta
 import db
-import requests
+
 from termcolor import colored
 import shlex
-import configparser
-
+import sys
 
 block = 0
 
@@ -366,7 +365,10 @@ def __main__():
         init()
     else:
         #generate action list
-        actions.generate_actions(actions.node_list)
+        c=actions.generate_actions(actions.node_list)
+        if c==0:
+            print("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE 'training.py' program.")
+            sys.exit()
 
         #fill initial gpw table
         if db.check_gpw_table() == 0:

@@ -1,6 +1,7 @@
 import numpy as np
 
 import db
+import os
 
 from importlib import reload
 
@@ -138,6 +139,10 @@ def generate_actions(node_list):
 
         for c in node_list:
             if (c.id != n.id):
+
+                if not os.path.exists("IM" + str(n.id) + str(c.id) + ".txt"):
+                    return 0
+
                 a = Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,
                            np.loadtxt("IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),
                            "IM" + str(n.id) + str(c.id) + ".txt", cost_m, "IM" + str(n.id) + str(c.id))
