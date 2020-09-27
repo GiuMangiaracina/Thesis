@@ -34,7 +34,7 @@ def insert_action(action, random):
     sql1 = "INSERT INTO events (data_source,action,time_stamp,active,controller_id,random,action_type) VALUES (%s,%s,%s,%s,%s,%s,%s)";
     t = int(time())
     print ("time_stamp:" + str(t))
-    if action.id != 12:
+    if action.id != 0:
         s = (actions.data_set_id, action.id, t, 1, actions.c_id, random,action.type)
     else:
         s = (actions.data_set_id, action.id, t, 0, actions.c_id, random,action.type)
@@ -75,7 +75,7 @@ def close_T(event_id):
 def feedback(t_viol):
     global connection, T
     cur = connection.cursor()
-    sql = "select time_stamp,id from events where active = 1 and controller_id != %s and action != 12 and data_source= %s "
+    sql = "select time_stamp,id from events where active = 1 and controller_id != %s and action != 0 and data_source= %s "
     cur.execute(sql, (actions.c_id, actions.data_set_id))
     rows = cur.fetchall()
     for row in rows:
@@ -290,7 +290,7 @@ def check_dc():
 def get_latency(c_id, node_id):
     global connection
     cur = connection.cursor()
-    sql = "select value from latency where node=%s and c_id=%s"
+    sql = "select value from latency where node=%s and node_ID=%s"
     s = (node_id, c_id)
     cur.execute(sql, s)
     connection.commit()
@@ -302,11 +302,64 @@ def update_latency(node_id, node_target, value):
     global connection
     cur = connection.cursor()
 
-    sql = "update latency set value = %s where c_id=%s and node=%s"
+    sql = "update latency set value = %s where node_ID=%s and node=%s"
     s = (value, node_id, node_target)
     cur.execute(sql, s)
     connection.commit()
     cur.close()
+
+
+
+def add_node(node_id):
+
+    # add missing latencies between nodes -> -1 to fill in manually!
+    global connection
+    cur = connection.cursor()
+    sql='insert into latency (node_ID,node,value) values (%s,%s,%s)'
+    s = (node_id, node_id, 0)
+    cur.execute(sql, s)
+    for a in actions.node_list:
+        sql='insert into latency (node_ID,node,value) values (%s,%s,%s)'
+        s = (node_id, a.id, -1)
+        cur.execute(sql, s)
+        sql1='insert into latency (node_ID,node,value) values (%s,%s,%s)'
+        s = (a.id,node_id, -1)
+        cur.execute(sql1, s)
+
+    connection.commit()
+
+
+    #add availability node-> -1 to fill in
+
+    sql2 = 'insert into availability (node, value) values (%s,%s)'
+    p = (node_id, -1)
+    cur.execute(sql2, p)
+    connection.commit()
+    cur.close()
+
+def fill_in_gpw():
+    global connection
+    cur = connection.cursor()
+    for a in actions.total_action_list:
+        sql='insert into global_counter (action,id,value) values (%s,%s,%s)'
+        p=(a.label,a.id,0)
+        cur.execute(sql, p)
+        connection.commit()
+    cur.close()
+
+
+
+def check_gpw_table():
+    global connection
+    cur = connection.cursor()
+
+    sql='SELECT EXISTS (SELECT 1 FROM global_counter);'
+
+    cur.execute(sql)
+
+    code= cur.fetchone()[0]
+    cur.close()
+    return code
 
 
 def truncate(number, digits) -> float:

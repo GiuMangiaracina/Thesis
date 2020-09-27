@@ -44,7 +44,7 @@ def init():
 
     with open('add.json', 'w') as jsonfile:
         json.dump(json_content, jsonfile, indent=4)
-    subprocess.call(["./addProxy.sh"])
+    subprocess.call(["./addProxy.sh"],shell=True)
 
     print("\n" + "\n" + "Proxy added")
 
@@ -72,7 +72,7 @@ def modify(n):
 
     with open('template.json', 'w') as jsonfile:
         json.dump(json_content, jsonfile, indent=4)
-    subprocess.call(["./modify.sh"])
+    subprocess.call(["./modify.sh"],shell=True)
 
 # method used to truncate floats
 def truncate(number, digits) -> float:
@@ -241,8 +241,8 @@ def check(RT, ET, X, NL, n):
         event_id = db.insert_action(selected, rand)
 
         print(str(event_id))
-        #12 = id of null action; call the method which will close the feedback process after T
-        if selected.id != 12:
+        #0 = id of null action; call the method which will close the feedback process after T
+        if selected.id != 0:
             db.close_T(event_id)
 
 
@@ -265,7 +265,7 @@ def check(RT, ET, X, NL, n):
             actions.update_data_set(selected.id_data_set)
 
         # start new computation
-        if selected.id != 12:
+        if selected.id != 0:
             #retrieve data set position
             n = db.set_data(actions.data_set_id)
 
@@ -294,7 +294,7 @@ def computation(n):
     modify(m)
     print("\n")
     #launch the spark application
-    subprocess.call(["./app.sh"])
+    subprocess.call(["./app.sh"],shell=True)
     time.sleep(1)
 
     # retrieve the metrics of the completed computation from the monitoring program
@@ -322,7 +322,7 @@ def computation_2(n):
         m = 0
     modify(m)
     print("\n")
-    subprocess.call(["./app.sh"])
+    subprocess.call(["./app.sh"],shell=True)
     time.sleep(1)
 
     # retrieve the metrics of the completed computation from the monitoring program
@@ -345,6 +345,10 @@ def __main__():
     if json_content['initialized'] == 0:
         init()
     else:
+
+        #generate action list
+        actions.generate_actions(actions.node_list)
+
         #infinite loop which start the computation
         while 1:
             #arrival rate
@@ -371,7 +375,7 @@ def setting():
 #method used to instantiate at run-time the available CR actions
 def instantiate_cr_actions():
     list = []
-    CR_actions = [actions.CR1, actions.CR2, actions.CR3]
+    CR_actions = actions.cr_action_list
     records = db.lookup_data()
     source_node = actions.state.id
     for row in records:

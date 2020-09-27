@@ -42,9 +42,6 @@ def init():
 
     # add proxy
 
-
-
-
     with open('add.json', 'r') as jsonfile:
         json_content = json.load(jsonfile)
     json_content["name"] = "minioProxy"+str(actions.c_id)
@@ -52,19 +49,12 @@ def init():
 
     with open('add.json', 'w') as jsonfile:
         json.dump(json_content, jsonfile, indent=4)
-    subprocess.call(["./addProxy.sh"])
+    subprocess.call(["./addProxy.sh"],shell=True)
 
     # set initial latency
     # l = int(input ("\n"+"set toxic, latency: "+"\n"))
     subprocess.call(shlex.split('./set.sh minioProxy'+str(actions.c_id)))
     # start the history server
-
-
-
-
-
-
-
 
     os.system("../sbin/start-history-server.sh ")
 
@@ -85,7 +75,7 @@ def modify(n):
 
     with open('template.json', 'w') as jsonfile:
         json.dump(json_content, jsonfile, indent=4)
-    subprocess.call(["./modify.sh"])
+    subprocess.call(["./modify.sh"],shell=True)
 
 # method used to truncate floats (to max digits number )
 def truncate(number, digits) -> float:
@@ -170,6 +160,8 @@ def check(RT, ET, X, NL, n):
         # start action selection process: create available action list
         actions.update_impacts()
         for a in actions.action_list:
+            
+
             if a.source.id == n.id and a.destination.disk == 1:
                 available_actions.append(a)
 
@@ -260,8 +252,8 @@ def check(RT, ET, X, NL, n):
         event_id = db.insert_action(selected, rand)
 
         print(str(event_id))
-        #12 = id of null action; call the method which will close the feedback process after T
-        if selected.id != 12:
+        #call the method which will close the feedback process after T (except for null actions)
+        if selected.id != 0:
             db.close_T(event_id)
 
 
@@ -287,7 +279,7 @@ def check(RT, ET, X, NL, n):
         n = db.set_data(actions.data_set_id)
 
         # start new computation
-        if selected.id != 12:
+        if selected.id != 0:
             availability_old_state = actions.get_state().availability
             #update state
             actions.set_state(n)
@@ -316,7 +308,8 @@ def computation(n):
     modify(m)
     print("\n")
     #launch the spark application
-    subprocess.call(["./app.sh"])
+    subprocess.call(["./app.sh"],shell=True)
+
     time.sleep(1)
 
     # retrieve the metrics of the completed computation from the monitoring program
@@ -347,7 +340,7 @@ def computation_2(n):
         m = 0
     modify(m)
     print("\n")
-    subprocess.call(["./app.sh"])
+    subprocess.call(["./app.sh"],shell=True)
     time.sleep(1)
 
     # retrieve the metrics of the completed computation from the monitoring program
@@ -372,6 +365,14 @@ def __main__():
     if json_content['initialized'] == 0:
         init()
     else:
+        #generate action list
+        actions.generate_actions(actions.node_list)
+
+        #fill initial gpw table
+        if db.check_gpw_table() == 0:
+            db.fill_in_gpw()
+
+
         #infinite loop which start the computation
         while 1:
             # time.sleep(random.randint(20,60))
@@ -401,7 +402,7 @@ def setting():
 #method used to instantiate at run-time the available CR actions
 def instantiate_cr_actions():
     list = []
-    CR_actions = [actions.CR1, actions.CR2, actions.CR3]
+    CR_actions = actions.cr_action_list
     records = db.lookup_data()
     source_node = actions.state.id
     for row in records:
