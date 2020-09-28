@@ -13,7 +13,7 @@ The algorithm uses some ML techiniques, and it is capable of adapting to the cha
 For the implementation, the applications and the tools used run in the form of containerized applications, based on built Docker IMGs.
 An application is considered as composed by three main parts: the processing component (Spark computation), the decision system and the monitoring system. The latters (and in general all the logic behind the system) are implemented through Python programs which resides within the containers of the spark instances.  
 
-In order to implement the algorithm and configure the environment and its properties, an instance of [mySQL server][mysql] is used, accessible from a [phpMyAdmin] [db gui]application.
+In order to implement the algorithm and configure the environment and its properties, an instance of [mySQL server][mysql] is used, accessible from a [phpMyAdmin][dbgui]application.
 
 The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program (training.py).
 
@@ -106,4 +106,4 @@ It is assumed that applications reach convergence when no new corrective actions
 [history server]: https://spark.apache.org/docs/latest/monitoring.html
 [docker]: https://docs.docker.com/get-docker/
 [mysql]: https://www.mysql.com/it/
-[db gui]: https://www.phpmyadmin.net/
+[dbgui]: https://www.phpmyadmin.net/
