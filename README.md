@@ -161,9 +161,9 @@ In the 'latency' table, each row contains the mean latency between each pair of 
         node_list = [...., N4, N5] 
 ```
        
- 8. execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
-9. execute the training program, following the steps explained in [(#offline-trainingoptional)] section.
-At this point you can start the program, following the (#usage) section
+ - execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
+- execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional).
+At this point you can start the program, following the [usage](#usage) section
 
 ## Add other applications to the system
 
