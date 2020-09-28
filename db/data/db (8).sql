@@ -54,9 +54,7 @@ CREATE TABLE `file_table` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 INSERT INTO `file_table` (`data_set`, `node`) VALUES
-(1,	3),
-(5,	1),
-(6,	2);
+(1,	3);
 
 DROP TABLE IF EXISTS `global_counter`;
 CREATE TABLE `global_counter` (
@@ -96,7 +94,6 @@ CREATE TABLE `nodes` (
 INSERT INTO `nodes` (`node_ID`) VALUES
 (1),
 (2),
-(3),
-(5);
+(3);
 
--- 2020-09-26 15:42:05
+-- 2020-09-28 13:17:01

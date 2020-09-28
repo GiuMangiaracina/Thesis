@@ -93,7 +93,7 @@ cost_cr = 1
 
 # null action
 
-NA = Action(0, 0, 0, "null", "Do Nothing", 0, [0, 0, 0, 0, 0], " ", 1,"NA")
+NA = Action(0, 0, 0, "null", "Do Nothing", 0, [0, 0, 0, 0, 0,0], " ", 1,"NA")
 
 
 

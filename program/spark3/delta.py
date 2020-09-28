@@ -51,7 +51,7 @@ def delta(RT1, ET1, X1, NL1, A1, RT2, ET2, X2, NL2, A2, action):
 
     #delta for data consistency
     if action.type == "copy":
-        dc = 1 / metrics.k
+        dc = - 1 / metrics.k
     else:
         dc = 0
     g = metrics.func(dc, metrics.d_c.ro)

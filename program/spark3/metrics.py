@@ -32,7 +32,7 @@ throughput = Metric(1000, 0, 0, 3000)
 availability = Metric(80, 0, 0, 25)
 
 # data consistency
-d_c = Metric(0.7, 1, 0, 1 / k)
+d_c = Metric(0.7, 1, 0, 1)
 
 
 # function used to truncate floats

@@ -14,7 +14,8 @@ def generate_actions():
     global action_list
     node_list = actions.node_list
     id = 1
-    v=[0,0,0,0,0,0]
+    v=[0,0,0,0,0]
+    vec=[0,0,0,0,0,0]
     for n in node_list:
 
         for c in node_list:
@@ -33,7 +34,7 @@ def generate_actions():
 
                 if not os.path.exists("output_training/ICR" + str(n.id) +".txt"):
                     os.mknod("output_training/ICR" + str(n.id) + ".txt")
-                    np.savetxt("output_training/ICR" + str(n.id) + ".txt", v, delimiter=',')
+                    np.savetxt("output_training/ICR" + str(n.id) + ".txt", vec, delimiter=',')
 
                     #generate movement actions
                 a = actions.Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,np.loadtxt("output_training/IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),"output_training/IM" + str(n.id) + str(c.id) + ".txt", actions.cost_m, "IM" + str(n.id) + str(c.id))
@@ -113,6 +114,8 @@ def training():
 
         k = metrics.func(a.destination.availability - a.source.availability, metrics.availability.ro)
         vector.append(k)
+
+
         print("impact vector for movement action " + a.label+" :\n")
         for v in vector:
             print (v)
@@ -127,10 +130,24 @@ def training():
             for x in vector:
                 f.write(str(x) + "\n")
 
+        g = metrics.func(0, metrics.d_c.ro)
+        with open(a.name_file, "a") as f:
+            f.write(str(g))
+
+
     # save impact vector for copy action
         with open("output_training/IC" + str(a.source.id) + str(a.destination.id) + ".txt", "w") as f:
             for x in vector:
                 f.write(str(x) + "\n")
+
+        dc = - (1 / metrics.k)
+
+        g = metrics.func(dc, metrics.d_c.ro)
+
+        with open("output_training/IC" + str(a.source.id) + str(a.destination.id) + ".txt", "a") as file:
+            file.write(str(g))
+
+       
     print (colored("TRAINING COMPLETED.",'green'))
 
 training()
