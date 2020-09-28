@@ -18,7 +18,7 @@ In order to implement the algorithm and configure the environment and its proper
 The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program (training.py).
 
 The proposed distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements. In the following are illustrated the steps to start the three applications, according to the proposed initial configuration. 
-
+### Table of contents
 - [Prerequisites:](#prerequisites-)
 - [Installation :](#installation--)
   * [Database setup (mySQL server + phpMyAdmin )](#database-setup--mysql-server---phpmyadmin--)
@@ -26,6 +26,8 @@ The proposed distributed networks of nodes is composed by three nodes, each of i
   * [minIO server setup](#minio-server-setup)
   * [Initialization](#initialization)
 - [Usage](#usage)
+- [Add other nodes to the network (empty, i.e., without running applications)](#add-other-nodes-to-the-network--empty--ie--without-running-applications-)
+- [Add other applications to the system](#add-other-applications-to-the-system)
 
 
 The following Figure shows the architecture of the system, after performing all the steps:
@@ -111,6 +113,9 @@ During the execution, the events happened in the environment, namely the actions
 
 It is assumed that applications reach convergence when no new corrective actions are recorded, i.e. when application executions meet agreed requirements. At this point, it is possible to stop the computation, simply pressing ```ctrl+c``` in each of the terminal windows. 
 
+## Add other nodes to the network (empty, i.e., without running applications)
+
+## Add other applications to the system
 
 [proxy]: https://github.com/Shopify/toxiproxy
 [minio]: https://min.io/
