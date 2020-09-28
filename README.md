@@ -19,6 +19,15 @@ The initial informations about the quality of the actions (internal impacts) are
 
 The proposed distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements. In the following are illustrated the steps to start the three applications, according to the proposed initial configuration. 
 
+- [Prerequisites:](#prerequisites-)
+- [Installation :](#installation--)
+  * [Database setup (mySQL server + phpMyAdmin )](#database-setup--mysql-server---phpmyadmin--)
+  * [Program setup](#program-setup)
+  * [minIO server setup](#minio-server-setup)
+  * [Initialization (this command, executed for the first time, initializes the proxies and the history servers.)](#initialization--this-command--executed-for-the-first-time--initializes-the-proxies-and-the-history-servers-)
+- [Usage](#usage)
+
+
 The following Figure shows the architecture of the system, after performing all the steps:
 ![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture.png)
 
@@ -68,13 +77,14 @@ At any time, to login within each of the containers, type in the terminal the fo
 - password = minio123 .
 2. load the data set: click on the '+' button, below; create a bucket named 'miniobucket'; load the extracted file 'file1.json' into the bucket just created.
 
-### Initialization (this command, executed for the first time, initializes the proxies and the history servers.)
+### Initialization
 In the 'program' directory:
 
 - for Windows users: execute 'start_win.cmd'and wait until its completion;
 - for Linux users, once logged as root user: 
 1. execute the file 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
 2. click on the file 'start.sh'and wait until its completion.
+ This command initializes the proxies and the Spark History Servers.
 
 After this initialization, the [Spark History Servers][history server] of the three applications, which show the properties of the computations, are accessible at the following addresses:
 - 'http://127.0.0.1:18080' (Spark1);
@@ -99,7 +109,7 @@ However, it is possible to modify the threesholds associated to these metrics, b
 
 During the execution, the events happened in the environment, namely the actions performed by the single decision systems and associated information, are posted and stored in the form of entry in the table 'events', visible through the phpMyAdmin application.
 
-It is assumed that applications reach convergence when no new corrective actions are recorded, i.e. when application executions meet agreed requirements. At this point, it is possible to stop the computation, simply pressing ctrl+c in each of the terminals. 
+It is assumed that applications reach convergence when no new corrective actions are recorded, i.e. when application executions meet agreed requirements. At this point, it is possible to stop the computation, simply pressing ```ctrl+c``` in each of the terminal windows. 
 
 
 [proxy]: https://github.com/Shopify/toxiproxy
