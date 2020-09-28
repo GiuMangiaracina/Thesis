@@ -10,8 +10,8 @@ However, since the applications rely on the same data source, these actions can 
 
 The algorithm uses some ML techiniques, and it is capable of adapting to the changes of the environment. Consequently, it is suitable for dynamic environments, as Fog Computing.
 
-For the implementation, the applications and the tools used run in the form of containerized applications, based on Docker containers.
-An application is composed by three main parts: the processing component (Spark computation), the decision system and the monitoring system. the latters are implemented through in Python programs.  
+For the implementation, the applications and the tools used run in the form of containerized applications, based on built Docker IMGs.
+An application is considered as composed by three main parts: the processing component (Spark computation), the decision system and the monitoring system. The latters (and in general all the system) are implemented through Python programs which resides within the containers of the spark instances.  
 
 In order to implement the algorithm and configure the environment and its properties, an instance of a mySQL database server is used, accessible from a phpMyAdmin application.
 
@@ -52,6 +52,10 @@ Execute all the following instructions, in order.
 In the 'program' directory:
 1. build the containers, typing 'docker-compose build';
 2. start the containers, typing 'docker-compose up'.
+This command will start the three applications, whose containers name are respectively : spark1, spark 2 and spark 3.
+
+At any time, to login within each of the containers, type in the terminal the following command : 'docker exec -it sparkN bash', substituting the value of N with the target container name (1, 2, 3, ..). To login simultaneously into the three containers, execute the start_bash_win.cmd or start_bash.sh program.
+
 ### minIO server setup
 1. Browse to 'http://127.0.0.1:9000', and login into minIO server instance using the following credentials: 
 - username = minio ;
@@ -67,12 +71,10 @@ In the 'program' directory:
 2. execute 'start.sh'and wait until its completion.
 
 After this initialization, the [Spark History Servers][history server] of the three applications, which show the properties of the computations, are accessible at the following addresses:
-- 'http://127.0.0.1:18080' (Spark1)
-- 'http://127.0.0.1:18081' (Spark2)
-- 'http://127.0.0.1:18082' (Spark3)
+- 'http://127.0.0.1:18080' (Spark1);
+- 'http://127.0.0.1:18081' (Spark2);
+- 'http://127.0.0.1:18082' (Spark3);
 
-
-to login within each of the containers, type in the terminal 
 ## Usage
 In the 'program' directory, re-run the following command:
 - for Windows users:
@@ -89,7 +91,7 @@ The selected QoS requirements of each applications are the following:
 
 However, it is possible to modify the threesholds associated to these metrics, by changing the values of min/max associated to the metrics in the 'metrics.py' file, located inside each of the spark folders.
 
-The events happened in the environment, namely the actions performed by the single decision systems and associated information, are posted and stored in the form of entry in the table events, visible through the phpMyAdmin application.
+During the execution, the events happened in the environment, namely the actions performed by the single decision systems and associated information, are posted and stored in the form of entry in the table 'events', visible through the phpMyAdmin application.
 
 It is assumed that applications reach convergence when no new corrective actions are recorded, i.e. when application executions meet agreed requirements. At this point, it is possible to stop the computation, simply pressing ctrl+c in each of the terminals. 
 
