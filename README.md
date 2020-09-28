@@ -11,9 +11,9 @@ However, since the applications rely on the same data source, these actions can 
 The algorithm uses some ML techiniques, and it is capable of adapting to the changes of the environment. Consequently, it is suitable for dynamic environments, as Fog Computing.
 
 For the implementation, the applications and the tools used run in the form of containerized applications, based on built Docker IMGs.
-An application is considered as composed by three main parts: the processing component (Spark computation), the decision system and the monitoring system. The latters (and in general all the system) are implemented through Python programs which resides within the containers of the spark instances.  
+An application is considered as composed by three main parts: the processing component (Spark computation), the decision system and the monitoring system. The latters (and in general all the logic behind the system) are implemented through Python programs which resides within the containers of the spark instances.  
 
-In order to implement the algorithm and configure the environment and its properties, an instance of a mySQL database server is used, accessible from a phpMyAdmin application.
+In order to implement the algorithm and configure the environment and its properties, an instance of [mySQL server][mysql] is used, accessible from a [phpMyAdmin] [db gui]application.
 
 The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program (training.py).
 
@@ -101,7 +101,9 @@ It is assumed that applications reach convergence when no new corrective actions
 
 
 [proxy]: https://github.com/Shopify/toxiproxy
-[minIO server]: https://min.io/
+[minio]: https://min.io/
 [spark]: https://spark.apache.org/
 [history server]: https://spark.apache.org/docs/latest/monitoring.html
 [docker]: https://docs.docker.com/get-docker/
+[mysql]: https://www.mysql.com/it/
+[db gui]: https://www.phpmyadmin.net/
