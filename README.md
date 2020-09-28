@@ -17,7 +17,7 @@ In order to implement the algorithm and configure the environment and its proper
 
 The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program (training.py).
 
-The provided distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements.
+The provided distributed networks of nodes is composed by three nodes, identified by an ID (1, 2, 3) each of it hosting an application which has its own QoS requirements.
 The selected QoS requirements of each applications are the following:
 
 - Spark 1: Response time ≤ 35 s AND Availability ≥ 95%; 
@@ -84,7 +84,7 @@ Execute all the following instructions, in order.
 In the 'program' directory:
 1. build the containers, typing: ```docker-compose build```;
 2. start the containers, typing ```docker-compose up```.
-This command will start the three applications, whose containers name are respectively : spark1, spark 2 and spark 3.
+This command will start the three applications, whose containers name are respectively : spark1, spark2 and spark3. Note that to each application is associated an ID (1,2,3) which corresponds both to the container name, and to the ID associated to the node where the application is considered running.
 
 At any time, to login within each of the containers, type in the terminal the following command : ```docker exec -it sparkN bash```, substituting the value of N with the target container name (1, 2, 3, ..). To login simultaneously into the three containers, execute the start_bash_win.cmd or start_bash.sh program.
 
@@ -132,7 +132,38 @@ During the execution, the events happened in the environment, namely the actions
 
 It is assumed that applications reach convergence when no new corrective actions are recorded, i.e. when application executions meet agreed requirements. At this point, it is possible to stop the computation, simply pressing ```ctrl+c``` in each of the terminal windows. 
 
-## Add other nodes to the network (empty, i.e., without running applications)
+## Add other nodes to the network (without running applications)
+To add additional empty nodes to the network, i.e., without running applications, follow these instructions.
+First of all, the nodes are identified for convention with an increasing number (1,2,3,..). In order to add nodes from 4 onwards:
+1. follow the db setup step 
+
+2. type in a terminal window, in order to login within the first application: ``` docker exec -it sparkN bash docker exec -it spark1 bash ```
+3. create and write the contenent of a new file : ``` nano file.py ```
+
+the function used, db.add_node(ID), adds a node with id ID in the system. For example, to add to nodes with ID 4 and 5, write:
+
+```import db
+   db.add_node(4)
+   db.add_node(5) 
+   ``` 
+4. save the file and execute it by typing ``` python file.py ```;
+
+5. go to tables 'latency' and 'availability' from the GUI db application, and fill in all the fields with value '-1' with the desired parameters.
+Eventually even the others.
+In the 'latency' table, each row contains the mean latency between each pair of nodes, identified by their unique ID. Note that these are only averages values, since at run-time it is used a gaussian distribution with this mean and a large variance.
+
+6. Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
+7. Repeat the following step in each of the the terminals:
+-  type: ``` actions.py ``` and add the new nodes to the configuration, by adding these lines to the files :
+ ``` N4 = Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
+     N5= ....
+      # add to the existing node list:
+        node_list = [...., N4, N5] 
+```
+       
+ 8. execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
+9. execute the training program, following the steps explained in [(#offline-trainingoptional)] section.
+At this point you can start the program, following the (#usage) section
 
 ## Add other applications to the system
 
