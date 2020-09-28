@@ -13,6 +13,7 @@ import db
 from termcolor import colored
 import shlex
 import os
+import sys
 # weights
 w_1 = 1
 w_2 = 1
@@ -351,7 +352,7 @@ def __main__():
 
         c=actions.generate_actions(actions.node_list)
         if c==0:
-            print("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE 'training.py' program.")
+            print (colored("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE 'training.py' program.",'red'))
             sys.exit()
 
         #infinite loop which start the computation

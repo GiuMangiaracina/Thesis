@@ -6,7 +6,7 @@ import subprocess
 import time
 import actions
 import numpy as np
-
+from termcolor import colored
 
 action_list = []
 
@@ -23,20 +23,20 @@ def generate_actions():
 
                 #create missing text files
 
-                if not os.path.exists("IM" + str(n.id) + str(c.id) + ".txt"):
-                    os.mknod("IM" + str(n.id) + str(c.id) + ".txt")
-                    np.savetxt("IM" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
+                if not os.path.exists("output_training/IM" + str(n.id) + str(c.id) + ".txt"):
+                    os.mknod("output_training/IM" + str(n.id) + str(c.id) + ".txt")
+                    np.savetxt("output_training/IM" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
 
-                    os.mknod("IC" + str(n.id) + str(c.id) + ".txt")
-                    np.savetxt("IC" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
+                    os.mknod("output_training/IC" + str(n.id) + str(c.id) + ".txt")
+                    np.savetxt("output_training/IC" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
 
 
-                if not os.path.exists("ICR" + str(n.id) +".txt"):
-                    os.mknod("ICR" + str(n.id) + ".txt")
-                    np.savetxt("ICR" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
+                if not os.path.exists("output_training/ICR" + str(n.id) +".txt"):
+                    os.mknod("output_training/ICR" + str(n.id) + ".txt")
+                    np.savetxt("output_training/ICR" + str(n.id) + ".txt", v, delimiter=',')
 
                     #generate movement actions
-                a = actions.Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,np.loadtxt("IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),"IM" + str(n.id) + str(c.id) + ".txt", actions.cost_m, "IM" + str(n.id) + str(c.id))
+                a = actions.Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,np.loadtxt("output_training/IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),"output_training/IM" + str(n.id) + str(c.id) + ".txt", actions.cost_m, "IM" + str(n.id) + str(c.id))
                 action_list.append(a)
                 id = id + 1
 
@@ -87,7 +87,7 @@ def training():
             RT1, ET1, X1, NL1 = computation(a.source.mean_delay)
             print("first computation finished (source)")
             RT2, ET2, X2, NL2 = computation(a.destination.mean_delay)
-            print("second computation finised (destination)")
+            print("second computation finished (destination)")
 
             dRT = RT2 - RT1
             s = -metrics.func(dRT, metrics.response_time.ro)
@@ -128,40 +128,12 @@ def training():
                 f.write(str(x) + "\n")
 
     # save impact vector for copy action
-        with open("IC" + str(a.source.id) + str(a.destination.id) + ".txt", "w") as f:
+        with open("output_training/IC" + str(a.source.id) + str(a.destination.id) + ".txt", "w") as f:
             for x in vector:
                 f.write(str(x) + "\n")
-    print("Training completed.")
 
-def generate_actions():
-    global action_list
-    node_list = actions.node_list
-    id = 1
-    v=[0,0,0,0,0]
-    for n in node_list:
+    print (colored("TRAINING COMPLETED.",'green'))
 
-        for c in node_list:
-            if (c.id != n.id):
-
-
-                # create missing text files
-
-                if not os.path.exists("IM" + str(n.id) + str(c.id) + ".txt"):
-                    os.mknod("IM" + str(n.id) + str(c.id) + ".txt")
-                    np.savetxt("IM" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
-
-                    os.mknod("IC" + str(n.id) + str(c.id) + ".txt")
-                    np.savetxt("IC" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
-
-
-                if not os.path.exists("ICR" + str(n.id) +".txt"):
-                    os.mknod("ICR" + str(n.id) + ".txt")
-                    np.savetxt("ICR" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
-
-                # generate movement actions
-                a = actions.Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,np.loadtxt("IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),"IM" + str(n.id) + str(c.id) + ".txt", actions.cost_m, "IM" + str(n.id) + str(c.id))
-                action_list.append(a)
-                id = id + 1
 
 
 training()
