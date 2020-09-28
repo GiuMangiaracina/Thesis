@@ -38,7 +38,7 @@ In the following are illustrated the steps to start the three applications, acco
   * [Program setup](#program-setup)
   * [minIO server setup](#minio-server-setup)
   * [Initialization](#initialization)
-  - [Offline training (optional)](#offline-training--optional-)
+- [Offline training (optional)](#offline-training--optional-)
 - [Usage](#usage)
 - [Add other nodes to the network (without running applications)](#add-other-nodes-to-the-network--without-running-applications-)
 - [Add other applications to the system](#add-other-applications-to-the-system)
