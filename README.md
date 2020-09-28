@@ -24,7 +24,7 @@ The proposed distributed networks of nodes is composed by three nodes, each of i
   * [Database setup (mySQL server + phpMyAdmin )](#database-setup--mysql-server---phpmyadmin--)
   * [Program setup](#program-setup)
   * [minIO server setup](#minio-server-setup)
-  * [Initialization (this command, executed for the first time, initializes the proxies and the history servers.)](#initialization--this-command--executed-for-the-first-time--initializes-the-proxies-and-the-history-servers-)
+  * [Initialization](#initialization)
 - [Usage](#usage)
 
 
