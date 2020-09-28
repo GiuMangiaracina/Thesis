@@ -38,7 +38,7 @@ In the following are illustrated the steps to start the three applications, acco
   * [Program setup](#program-setup)
   * [minIO server setup](#minio-server-setup)
   * [Initialization](#initialization)
-- [Offline training (optional)](#offline-training--optional-)
+- [Offline training(optional)](#offline-training-optional-)
 - [Usage](#usage)
 - [Add other nodes to the network (without running applications)](#add-other-nodes-to-the-network--without-running-applications-)
 - [Add other applications to the system](#add-other-applications-to-the-system)
@@ -108,7 +108,7 @@ After this initialization, the [Spark History Servers][history server] of the th
 - 'http://127.0.0.1:18081' (Spark2);
 - 'http://127.0.0.1:18082' (Spark3);
 
-## Offline training (optional)
+## Offline training(optional)
 The training step is used to produce the set of initial impact vectors, which represent the effects of the actions on the various QoS metrics.
  Since the the applications contains already the output of the training (IMXY/ICXY/ICRY.txt text files), it is not necessary to re-execute the training program if the initial configuration is maintained. However, if big changes to the properties are executed (during the db setup step), it is necessary to re-execute the training step. Moreover, since the computation performances may vary from a machine to another, is preferable to perform anyway this step.
  
