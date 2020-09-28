@@ -1,8 +1,8 @@
-This system simulates a distributed network of resources, on which run applications consuming data (DaaS)  which rely on the same data source.
+This system simulates a distributed network of computing nodes, on which run applications consuming data (DaaS)  which rely on the same data source.
 In order to simulate a distributed net of nodes far from each other, has been used a tool which injects latency among the nodes and the data source ([toxiproxy][proxy]).  
-The computations consist in [Apache Spark][spark] applications , which calculate the average value of the cholesterol field of the provided data set, which consists in a large number of blood tests. The file containing the data set is stored in a [minIO server][minio], reachable from any application.
-Through the proposed algorithm, the decision systems associated to the applications are capable of taking decisions (distributed control), in order to restore their QoS requirements at run-time in response to requirements violations.
-The actions consists in data movement, duplication actions, and change reference copy actions toward the data set. 
+The computations consist in [Apache Spark][spark] applications, which calculate the average value of the cholesterol field of the provided data set, which consists in a large number of blood tests. The file containing the data set is stored in a [minIO server][minio], reachable from any application.
+Through the proposed algorithm, the decision systems associated to the applications are capable of taking decisions (distributed control), in order to restore their QoS (Quality of Service) requirements at run-time in response to requirements violations.
+The actions consists in data movement (MXY = move data from X to Y,  where  X and Y are the ID associated to the nodes of the net, i.e., 1, 2, ..), duplication actions (CXY = copy data from X to Y), and change reference copy actions (CRY =  change reference copy of the data set, to a data set located in resource Y ) toward the data set. 
 The actions are guided by the knowledge of the impact that actions have on the metrics associated to the goal of the user (internal impacts).
 The value of the metrics is measured by a monitoring program, associated to each application (distributed monitoring).
 
@@ -17,7 +17,20 @@ In order to implement the algorithm and configure the environment and its proper
 
 The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program (training.py).
 
-The proposed distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements. In the following are illustrated the steps to start the three applications, according to the proposed initial configuration. 
+The provided distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements.
+The selected QoS requirements of each applications are the following:
+
+- Spark 1: Response time ≤ 35 s AND Availability ≥ 95%; 
+- Spark 2: Throughput ≥ 30000 n/s AND Availability ≥ 80%;
+- Spark 3: Data Consistency ≥ 0.7 OR Network Latency ≤ 1300 ms
+
+However, it is possible to modify the threesholds associated to these metrics, by changing the values of min/max associated to the metrics in the 'metrics.py' file, located inside each of the spark folders.
+ 
+
+In the following are illustrated the steps to start the three applications, according to the proposed initial configuration. 
+
+
+
 ### Table of contents
 - [Prerequisites:](#prerequisites-)
 - [Installation :](#installation--)
@@ -26,15 +39,16 @@ The proposed distributed networks of nodes is composed by three nodes, each of i
   * [minIO server setup](#minio-server-setup)
   * [Initialization](#initialization)
 - [Usage](#usage)
-- [Add other nodes to the network (empty, i.e., without running applications)](#add-other-nodes-to-the-network--empty--ie--without-running-applications-)
+- [Add other nodes to the network (without running applications)](#add-other-nodes-to-the-network--without-running-applications-)
 - [Add other applications to the system](#add-other-applications-to-the-system)
 
 
-The following Figure shows the architecture of the system, after performing all the steps:
+The following Figure shows the architecture of the system, after performing all the installation steps:
 ![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture.png)
 
-Modifying the values of the database, it is possible to change at run-time the properties of the environment, namely the availability and the latency among the nodes.
-However, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instruction in the attached document [?]. In the latter cases, the offline learning must be executed, in order to setup properly the information about the initial impacts.
+Modifying the values from the database, it is possible to change at run-time the properties of the environment, namely the availability and the latency among the nodes.
+Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, the offline learning must be executed, in order to setup properly the information about the initial impacts.
+
 
 ## Prerequisites:
 - a working [Docker][docker] installation (for 64-bit systems);
@@ -64,7 +78,7 @@ Execute all the following instructions, in order.
  - database = db;
  
 6. import the database data and schemas from the provided dump file, clicking on Import-> File Upload -> Browse, and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute':
-7. eventually apply any edits to the initial configuration, editing the 'latency' and 'availability' tables of the database.
+7. eventually apply any edits to the initial configuration, editing the 'latency' and 'availability' tables of the database from the GUI.
 ### Program setup
 In the 'program' directory:
 1. build the containers, typing: ```docker-compose build```;
@@ -93,6 +107,16 @@ After this initialization, the [Spark History Servers][history server] of the th
 - 'http://127.0.0.1:18081' (Spark2);
 - 'http://127.0.0.1:18082' (Spark3);
 
+## Offline training (optional)
+The training step is used to produce the set of initial impact vectors, which represent the effects of the actions on the various QoS metrics.
+ Since the the applications contains already the output of the training (IMXY/ICXY/ICRY.txt text files), it is not necessary to re-execute the training program if the initial configuration is maintained. However, if big changes to the properties are executed (during the db setup step), it is necessary to re-execute the training step. Moreover, since the computation performances may vary from a machine to another, is preferable to perform anyway this step.
+ 
+ - Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
+ - (optional)  type ``` nano training.py ``` and modify the constant N, to configure the number of iterations of the training step, namely the number of times each action is tried. The result stored in the impact vectors will be the average of the N steps. 
+ - In each of the terminals, type ``` python training.py ``` and wait until its completion. (Note that the required time can be quite long, depending on the number of nodes in the network and to the N value);
+ - in each of the terminals, type ``` cp -a /usr/spark-2.4.1/bin/output_training/. ./ ```, in order to copy the results of the training to the correct directory (/usr/spark-2.4.1/bin);
+ - close the terminals.
+ 
 ## Usage
 In the 'program' directory, re-execute the following program:
 - for Windows users:
@@ -101,13 +125,7 @@ click on 'start_win.cmd';
 click on 'start.sh' .
 
 This command starts the system, and executes in parallel the computations, showing them on three different terminal windows.
-The selected QoS requirements of each applications are the following:
 
-- Spark 1: Response time ≤ 35 s AND Availability ≥ 95%; 
-- Spark 2: Throughput ≥ 30000 n/s AND Availability ≥ 80%;
-- Spark 3: Data Consistency ≥ 0.7 OR Network Latency ≤ 1300 ms
-
-However, it is possible to modify the threesholds associated to these metrics, by changing the values of min/max associated to the metrics in the 'metrics.py' file, located inside each of the spark folders.
 
 During the execution, the events happened in the environment, namely the actions performed by the single decision systems and associated information, are posted and stored in the form of entry in the table 'events', visible through the phpMyAdmin application.
 
