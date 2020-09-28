@@ -1,6 +1,6 @@
 This system simulates a distributed network of resources, on which run applications consuming data (DaaS)  which rely on the same data source.
 In order to simulate a distributed net of nodes far from each other, has been used a tool which injects latency among the nodes ([toxiproxy][proxy]).  
-The computations consist in [Apache Spark] [spark] applications , which calculate the average value of the cholesterol field of the provided data set, which consists in a large number of blood tests. The file containing the data set is stored in a [minIO server] [minio], reachable from any application.
+The computations consist in [Apache Spark][spark] applications , which calculate the average value of the cholesterol field of the provided data set, which consists in a large number of blood tests. The file containing the data set is stored in a [minIO server][minio], reachable from any application.
 Through the proposed algorithm, the decision systems associated to the applications are capable of taking decisions (distributed control), in order to restore their QoS requirements at run-time in response to requirements violations.
 The actions consists in data movement, duplication actions, and change reference copy actions toward the data set. 
 The actions are guided by the knowledge of the impact that actions have on the metrics associated to the goal of the user (internal impacts).
@@ -22,7 +22,7 @@ Modifying the values of the database, it is possible to change at run-time the p
 However, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instruction in the attached document [?]. In the latter cases, the offline learning must be executed, in order to setup properly the information about the initial impacts.
 
 ## Prerequisites:
-- a working [Docker] [docker] installation (for 64-bit systems);
+- a working [Docker][docker] installation (for 64-bit systems);
 - docker-compose installed  (to install it on Linux systems, type 'sudo apt install docker-compose' in the terminal.);
 - for Linux users, xterm installed (to install it, type 'sudo apt-get install xterm' in the terminal.).
 - for Windows users which use Docker Toolbox (legacy solution for Windows versions different from Windows 10 Professional and Enterprise 64-bit):
@@ -66,7 +66,7 @@ In the 'program' directory:
 1. execute 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
 2. execute 'start.sh'and wait until its completion.
 
-After this initialization, the [Spark History Servers] [history server] of the three applications, which show the properties of the computations, are accessible at the following addresses:
+After this initialization, the [Spark History Servers][history server] of the three applications, which show the properties of the computations, are accessible at the following addresses:
 - 'http://127.0.0.1:18080' (Spark1)
 - 'http://127.0.0.1:18081' (Spark2)
 - 'http://127.0.0.1:18082' (Spark3)
@@ -95,7 +95,7 @@ It is assumed that applications reach convergence when no new corrective actions
 
 
 [proxy]: https://github.com/Shopify/toxiproxy
-[minio]: https://min.io/
+[minIO server]: https://min.io/
 [spark]: https://spark.apache.org/
 [history server]: https://spark.apache.org/docs/latest/monitoring.html
 [docker]: https://docs.docker.com/get-docker/
