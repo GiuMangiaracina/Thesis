@@ -4,19 +4,21 @@ The computations consist in Apache Spark applications (https://spark.apache.org/
 Through the proposed algorithm, the decision systems associated to the applications are capable of taking decisions (distributed control), in order to restore their QoS requirements at run-time in response to requirements violations.
 The actions consists in data movement, duplication actions, and change reference copy actions toward the data set. 
 The actions are guided by the knowledge of the impact that actions have on the metrics associated to the goal of the user (internal impacts).
-However, since the applications rely on the same data source, actions can not be taken in complete isolation.  To overcome this issue,has been developed a mechanism based on the release of  external feedbacks evaluation of the performed actions in the environment, by the other involved applications (external impacts).
+The value of the metrics is measured by a monitoring program, associated to each application (distributed monitoring).
 
-The algorithm uses some ML techiniques, and it is adaptive to the changes of the environment. Consequently, it is suitable for dynamic environments.
+However, since the applications rely on the same data source, these actions can not be taken in complete isolation. To overcome this issue, has been developed a mechanism based on the release of external feedbacks on the performed actions in the environment, by the other involved applications (external impacts).
 
-The applications and the tools used run in the form of containerized applications, based on Docker IMGs.
+The algorithm uses some ML techiniques, and it is capable of adapting to the changes of the environment. Consequently, it is suitable for dynamic environments, as Fog Computing.
+
+The applications and the tools used run in the form of containerized applications, based on Docker containers.
 
 In order to implement the algorithm and configure the environment and its properties, an instance of a mySQL database server is used, accessible from a phpMyAdmin application.
 
-The initial informations about the quality of the actions (internal impacts) are learned through an offline learning .
+The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program .
 
 The distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements. In the following are illustrated the steps to start the three applications, according to the chosen initial configuration. 
-Through the database, is possible to change at run-time the properties of the environment, namely the availability and the latency among the nodes.
-However, it is possible to change configuration, and extend the network, adding both addtional nodes and applications, following the instruction in the attached document [?]. 
+Modifying the values of the database, it is possible to change at run-time the properties of the environment, namely the availability and the latency among the nodes.
+However, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instruction in the attached document [?]. In the latter cases, the offline learning must be executed, in order to setup properly the information about the initial impacts.
 
 ## Prerequisites:
 - a working docker installation (for 64-bit systems); (https://docs.docker.com/get-docker/)
@@ -31,7 +33,7 @@ However, it is possible to change configuration, and extend the network, adding 
 Execute all the following instructions, in order.
 
 - clone this repository to your working directory typing 'git clone https://github.com/GiuMangiaracina/Thesis';
-- extract in the working directory the compressed file  'file1.rar'.
+- extract in the working directory the compressed file 'file1.rar'.
 ### Database setup (mySQL server + phpMyAdmin )
 1. move into db directory. For Linux users, login as root user typing 'sudo su' at the terminal;
 2. build the images, typing 'docker-compose build';
@@ -63,7 +65,7 @@ In the program directory:
 1. execute 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
 2. execute 'start.sh'and wait until its completion.
 
-After this initialization, the Spark History Servers of the three applications are accessible at the following addresses:
+After this initialization, the Spark History Servers (https://spark.apache.org/docs/latest/monitoring.html) of the three applications, which shows the properties of the computations, are accessible at the following addresses:
 - 'http://127.0.0.1:18080' (spark1)
 - 'http://127.0.0.1:18081' (spark2)
 - 'http://127.0.0.1:18082' (spark3)
@@ -75,4 +77,7 @@ execute 'start_win.cmd';
 execute 'start.sh' .
 
 
-The events happened in the environment, namely the actions performed by the single decision systems, are stored in the form of entry in the table event, visible through the phpMyAdmin application.
+The events happened in the environment, namely the actions performed by the single decision systems and associated information, are posted and stored in the form of entry in the table events, visible through the phpMyAdmin application.
+
+
+It is assumed that applications reach convergence when no new corrective actions are recorded, i.e. when application executions meet agreed requirements. At this point, it is possible to stop the computation, simply pressing ctrl+c in each of the terminals. 
