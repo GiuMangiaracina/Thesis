@@ -1,5 +1,5 @@
 This system simulates a distributed network of resources, on which run applications consuming data (DaaS)  which rely on the same data source.
-In order to simulate a distributed net of nodes far from each other, has been used a tool which injects latency among the nodes ([toxiproxy][proxy]).  
+In order to simulate a distributed net of nodes far from each other, has been used a tool which injects latency among the nodes and the data source ([toxiproxy][proxy]).  
 The computations consist in [Apache Spark][spark] applications , which calculate the average value of the cholesterol field of the provided data set, which consists in a large number of blood tests. The file containing the data set is stored in a [minIO server][minio], reachable from any application.
 Through the proposed algorithm, the decision systems associated to the applications are capable of taking decisions (distributed control), in order to restore their QoS requirements at run-time in response to requirements violations.
 The actions consists in data movement, duplication actions, and change reference copy actions toward the data set. 
@@ -15,9 +15,13 @@ An application is considered as composed by three main parts: the processing com
 
 In order to implement the algorithm and configure the environment and its properties, an instance of a mySQL database server is used, accessible from a phpMyAdmin application.
 
-The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program .
+The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program (training.py).
 
-The distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements. In the following are illustrated the steps to start the three applications, according to the chosen initial configuration. 
+The proposed distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements. In the following are illustrated the steps to start the three applications, according to the proposed initial configuration. 
+
+The following Figure shows the architecture of the system, after performing all the steps:
+![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture.png)
+
 Modifying the values of the database, it is possible to change at run-time the properties of the environment, namely the availability and the latency among the nodes.
 However, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instruction in the attached document [?]. In the latter cases, the offline learning must be executed, in order to setup properly the information about the initial impacts.
 
