@@ -1,6 +1,23 @@
 This system simulates a distributed network of resources, on which are running applications consuming data (DaaS) relying on the same data source.
-The computations consist in Spark applications, which calculate the average value of a field of the provided data set. 
-Through the proposed algorithm, the applications apply distributed control, in order to guarantee their QoS requirements at run-time, in response to requirements violations.
+In order to simulate a distributed net of nodes far from each other, has been used a tool which injects latency among the nodes (toxiproxy https://github.com/Shopify/toxiproxy).
+The computations consist in Apache Spark applications (https://spark.apache.org/), which calculate the average value of the cholesterol field of the provided data set, which consists in a large number of blood tests. The file containing the data set is stored in a minIO server (https://min.io/), reachable from any application.
+Through the proposed algorithm, the decision systems associated to the applications are capable of taking decisions (distributed control), in order to restore their QoS requirements at run-time in response to requirements violations.
+The actions consists in data movement, duplication actions, and change reference copy actions toward the data set. 
+The actions are guided by the knowledge of the impact that actions have on the metrics associated to the goal of the user (internal impacts).
+However, since the applications rely on the same data source, actions can not be taken in complete isolation.  To overcome this issue,has been developed a mechanism based on the release of  external feedbacks evaluation of the performed actions in the environment, by the other involved applications (external impacts).
+
+The algorithm uses some ML techiniques, and it is adaptive to the changes of the environment. Consequently, it is suitable for dynamic environments.
+
+The applications and the tools used run in the form of containerized applications, based on Docker IMGs.
+
+In order to implement the algorithm and configure the environment and its properties, an instance of a mySQL database server is used, accessible from a phpMyAdmin application.
+
+The initial informations about the quality of the actions (internal impacts) are learned through an offline learning .
+
+The distributed networks of nodes is composed by three nodes, each of it hosting an application which has its own QoS requirements. In the following are illustrated the steps to start the three applications, according to the chosen initial configuration. 
+Through the database, is possible to change at run-time the properties of the environment, namely the availability and the latency among the nodes.
+However, it is possible to change configuration, and extend the network, adding both addtional nodes and applications, following the instruction in the attached document [?]. 
+
 ## Prerequisites:
 - a working docker installation (for 64-bit systems); (https://docs.docker.com/get-docker/)
 - docker-compose installed  (to install it on Linux systems, type 'sudo apt install docker-compose' in the terminal.);
@@ -16,7 +33,7 @@ Execute all the following instructions, in order.
 - clone this repository to your working directory typing 'git clone https://github.com/GiuMangiaracina/Thesis';
 - extract in the working directory the compressed file  'file1.rar'.
 ### Database setup (mySQL server + phpMyAdmin )
-1. move into  db directory. For Linux users, login as root user typing 'sudo su' at the terminal;
+1. move into db directory. For Linux users, login as root user typing 'sudo su' at the terminal;
 2. build the images, typing 'docker-compose build';
 3. start the containers, typing 'docker-compose up';
 4. access to phpMyAdmin web app browsing to 'http://127.0.0.1/8080';
@@ -26,17 +43,17 @@ Execute all the following instructions, in order.
  - username = root;
  - password = helloworld;
  - database = db;
-6. import the database, clicking on Import-> File Upload -> Browse, and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute':
-7. eventually apply any edits to the initial configuration, editing the tables of the database.
+6. import the database data and schemas from the provided dump file, clicking on Import-> File Upload -> Browse, and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute':
+7. eventually apply any edits to the initial configuration, editing the 'latency' and 'availability' tables of the database.
 ### Program setup
 In the program directory:
 1. build the containers, typing 'docker-compose build';
 2. start the containers, typing 'docker-compose up'.
 ### minIO server setup
 1. Browse to 'http://127.0.0.1:9000', and login into minIO server instance using the following credentials: 
-- username = minio;
+- username = minio ;
 - password = minio123 .
-2. load the json file: click on the '+' button, below; create a bucket named 'miniobucket'; load the extracted file 'file1.json' into the bucket just created.
+2. load the data set: click on the '+' button, below; create a bucket named 'miniobucket'; load the extracted file 'file1.json' into the bucket just created.
 
 ### Initialization (this command, executed for the first time, initializes the proxies and the history servers.)
 In the program directory:
@@ -56,3 +73,6 @@ In the program directory, rerun the following command:
 execute 'start_win.cmd';
 - for Linux users:
 execute 'start.sh' .
+
+
+The events happened in the environment, namely the actions performed by the single decision systems, are stored in the form of entry in the table event, visible through the phpMyAdmin application.
