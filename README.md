@@ -37,28 +37,30 @@ However, it is possible to change the initial configuration, or extend the netwo
 ## Installation : 
 Execute all the following instructions, in order.
 
-- clone this repository to your working directory typing 'git clone https://github.com/GiuMangiaracina/Thesis';
+- clone this repository to your working directory typing:  ``` git clone https://github.com/GiuMangiaracina/Thesis ```;
 - extract in the working directory the compressed file 'file1.rar'.
 ### Database setup (mySQL server + phpMyAdmin )
-1. move into 'db' directory. For Linux users, login as root user typing 'sudo su' at the terminal;
-2. build the images, typing 'docker-compose build';
-3. start the containers, typing 'docker-compose up';
+1. move into 'db' directory. For Linux users, login as root user typing : ```sudo su ``` at the terminal;
+2. build the images, typing: ```docker-compose build```;
+3. start the containers, typing: ```docker-compose up```;
 4. access to phpMyAdmin web app browsing to 'http://127.0.0.1/8080';
 5. login into database using the following credentials: 
+ 
  - system = MySql;
  - server = mysql-development;
  - username = root;
  - password = helloworld;
  - database = db;
+ 
 6. import the database data and schemas from the provided dump file, clicking on Import-> File Upload -> Browse, and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute':
 7. eventually apply any edits to the initial configuration, editing the 'latency' and 'availability' tables of the database.
 ### Program setup
 In the 'program' directory:
-1. build the containers, typing 'docker-compose build';
-2. start the containers, typing 'docker-compose up'.
+1. build the containers, typing: ```docker-compose build```;
+2. start the containers, typing ```docker-compose up```.
 This command will start the three applications, whose containers name are respectively : spark1, spark 2 and spark 3.
 
-At any time, to login within each of the containers, type in the terminal the following command : 'docker exec -it sparkN bash', substituting the value of N with the target container name (1, 2, 3, ..). To login simultaneously into the three containers, execute the start_bash_win.cmd or start_bash.sh program.
+At any time, to login within each of the containers, type in the terminal the following command : ```docker exec -it sparkN bash```, substituting the value of N with the target container name (1, 2, 3, ..). To login simultaneously into the three containers, execute the start_bash_win.cmd or start_bash.sh program.
 
 ### minIO server setup
 1. Browse to 'http://127.0.0.1:9000', and login into minIO server instance using the following credentials: 
@@ -71,8 +73,8 @@ In the 'program' directory:
 
 - for Windows users: execute 'start_win.cmd'and wait until its completion;
 - for Linux users, once logged as root user: 
-1. execute 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
-2. execute 'start.sh'and wait until its completion.
+1. execute the file 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
+2. click on the file 'start.sh'and wait until its completion.
 
 After this initialization, the [Spark History Servers][history server] of the three applications, which show the properties of the computations, are accessible at the following addresses:
 - 'http://127.0.0.1:18080' (Spark1);
@@ -80,11 +82,11 @@ After this initialization, the [Spark History Servers][history server] of the th
 - 'http://127.0.0.1:18082' (Spark3);
 
 ## Usage
-In the 'program' directory, re-run the following command:
+In the 'program' directory, re-execute the following program:
 - for Windows users:
-execute 'start_win.cmd';
+click on 'start_win.cmd';
 - for Linux users:
-execute 'start.sh' .
+click on 'start.sh' .
 
 This command starts the system, and executes in parallel the computations, showing them on three different terminal windows.
 The selected QoS requirements of each applications are the following:
