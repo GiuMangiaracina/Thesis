@@ -140,6 +140,9 @@ During the execution, the events happened in the environment, namely the actions
 
 It is assumed that applications reach convergence when no new corrective actions are recorded, i.e. when application executions meet agreed requirements. At this point, it is possible to stop the computation, simply pressing ```ctrl+c``` in each of the terminal windows. 
 
+
+to stop all the containers, once located from the terminal respectively in the 'program' and 'db' folders, type ``` docker-compose down``` .
+
 ## Add other nodes to the network (without running applications)
 To add additional empty nodes to the network, i.e., without running applications, follow these instructions.
 First of all, the nodes are identified by an ID, which for convention is an increasing number (1,2,3,..). In order to add nodes, you have to start from 4 onwards:
@@ -200,8 +203,6 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
 - execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
 - execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional).
 Eventually store the results as explained in the section, for the next executions.
-
-
 
 
 At this point you can start the program, following the [usage](#usage) section.
