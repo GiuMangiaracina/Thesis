@@ -188,7 +188,7 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
  ``` N4 = Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
      N5= ....
      
-     # add to the existing node list:
+     # add the nodes to the existing node list:
         node_list = [...., N4, N5] 
 ```
        
