@@ -25,6 +25,7 @@ The selected QoS requirements of each applications are the following:
 - Spark 3: Data Consistency ≥ 0.7 OR Network Latency ≤ 1300 ms
 
 However, it is possible to modify the threesholds associated to these metrics, by changing the values of min/max associated to the metrics in the 'metrics.py' file, located inside each of the spark folders.
+The selected initial configuration is visible from the database GUI.
  
 
 In the following are illustrated the steps to start the three applications, according to the proposed initial configuration. 
@@ -206,14 +207,25 @@ Eventually store the results as explained in the section, for the next execution
 
 
 At this point you can start the program, following the [usage](#usage) section.
-## Add other applications to the system
-To add a new app, with id N>3:
--	duplicate a spark directory
--	rename as sparkN
 
--	inside docker-compose.yml, add at the bottom:
+## Add other applications to the system
+To add a new application to the system, it is necessary to add even an associated node to the system, where the application is virtually running.
+
+
+Remembering that all the nodes are identified by an ID, with an increasing number (1,2,3,..). 
+For convention, the associated applications have the same ID.
+So, in order to add new applications and nodes, you have to start with an associated ID from 4 onwards. 
+Follow these instructions (in general, you can use the previous 3 applications as guide, substituting the configuration with the right ID in the various files), for each of the new applications.
+
+When you read N, substitute with the correct ID (4, 5 ,...) value:
+
+-	duplicate a spark directory in the 'program' folder. Since each application have different requirements ( you can read them above), you can duplicate the folder with the metrics of interest for the new application. Then you can modify the min/max threesholds changing the parameters in the 'metrics.py' file.
+
+-	rename the folder with 'sparkN';
+
+-	open the 'docker-compose.yml' file in the 'program' folder, and add at the bottom the following lines for each application, necessary to build the new container:
  ```
- spark:
+ sparkN:
         build : ./sparkN/
                  
         network_mode: host
@@ -224,14 +236,14 @@ To add a new app, with id N>3:
         
         container_name : sparkN
 ```
--	add a column named 'feedback_N 'to the 'events' table in the database;
 
--	inside the folder 'sparkN', modify these values, substituing N with the id of the application:
--	actions.py-> ```c_id = N ```
--	app.sh: 
+
+-	inside the folder 'sparkN', modify these values inside the various files, substituing N with the ID of the application:
+-	In 'actions.py'-> ```c_id = N ``` ;
+-	in 'app.sh': 
 ``` { time spark-submit --master local[2] --conf spark.hadoop.fs.s3a.endpoint=http://127.0.0.1:800N script.py 2>1 ;} 2>> time.log ```
 
--	db : inside feedback()function, 
+- in	'db' : inside the feedback() function, 
 ``` sql2 = "update events set sum_feedback = sum_feedback + %s  where id = % s and feedback_N = 0"
         q = (p, event_id)
         cur.execute(sql2, q)
@@ -241,15 +253,16 @@ To add a new app, with id N>3:
         cur.execute(sql1, r)
         connection.commit()
 ```
--in set.sh: 
+- in 'set.sh': 
 ``` curl -X POST http://127.0.0.1:8474/proxies/minioProxyN/toxics -d "@template.json" ```
 
--In spark-defaults.conf, modify:
+- in 'spark-defaults.conf', modify:
 
 ``` spark.hadoop.fs.s3a.endpoint=http://127.0.0.1:800N
     spark.history.ui.port=1808N 
 ```
-
+-	Finally, add a column named 'feedback_N 'to the 'events' table in the database, through the database GUI.
+At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications). Remember that for each application, it is necessary to add the node with the same ID. So, for example, if you want to add another application, its ID will be 4, and the associated ID of the node will be 4.
 
 
 
