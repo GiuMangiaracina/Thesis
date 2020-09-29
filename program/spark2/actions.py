@@ -79,11 +79,13 @@ N2 = Node(2, 1, db.get_availability(2), db.get_latency(2, 2))
 N3 = Node(3, 1, db.get_availability(3), db.get_latency(2, 3))
 state = Node(0, 0, 0, 0)
 
-# id of the reference copy of the application
+# id of the data reference copy for the application
 data_set_id = 1
+
+# node list
 node_list = [N1, N2, N3]
 
-# costs, metadata associated to action type (1)+ monetary cost ($/GB)
+# costs, metadata associated to action type (1) + monetary cost ($/GB)
 cost_m = 1.5
 cost_d = 1.8
 cost_cr = 1
@@ -113,7 +115,7 @@ def update_state(node):
     state.mean_delay = db.get_latency(2, node.id)
 
 
-# method which retuns the actual state
+# method which returns the actual state
 def get_state():
     return state
 
@@ -124,13 +126,14 @@ def update_data_set(n):
     data_set_id = n
 
 
-# map node id from db to node object
+# function that map the node id to node object
 def set_state(n):
     for x in node_list:
         if x.id == n:
             update_state(x)
 
 
+# function which generates the list of actions
 def generate_actions(node_list):
     global total_action_list, cr_action_list, action_list
     id = 1

@@ -10,18 +10,18 @@ from termcolor import colored
 
 action_list = []
 
+
 def generate_actions():
     global action_list
     node_list = actions.node_list
     id = 1
-    v=[0,0,0,0,0,0]
+    v = [0, 0, 0, 0, 0, 0]
     for n in node_list:
 
         for c in node_list:
             if (c.id != n.id):
 
-
-                #create missing text files
+                # create missing text files
 
                 if not os.path.exists("output_training/IM" + str(n.id) + str(c.id) + ".txt"):
                     os.mknod("output_training/IM" + str(n.id) + str(c.id) + ".txt")
@@ -30,15 +30,18 @@ def generate_actions():
                     os.mknod("output_training/IC" + str(n.id) + str(c.id) + ".txt")
                     np.savetxt("output_training/IC" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
 
-
-                if not os.path.exists("output_training/ICR" + str(n.id) +".txt"):
+                if not os.path.exists("output_training/ICR" + str(n.id) + ".txt"):
                     os.mknod("output_training/ICR" + str(n.id) + ".txt")
                     np.savetxt("output_training/ICR" + str(n.id) + ".txt", v, delimiter=',')
 
-                    #generate movement actions
-                a = actions.Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,np.loadtxt("output_training/IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),"output_training/IM" + str(n.id) + str(c.id) + ".txt", actions.cost_m, "IM" + str(n.id) + str(c.id))
+                    # generate movement actions
+                a = actions.Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,
+                                   np.loadtxt("output_training/IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),
+                                   "output_training/IM" + str(n.id) + str(c.id) + ".txt", actions.cost_m,
+                                   "IM" + str(n.id) + str(c.id))
                 action_list.append(a)
                 id = id + 1
+
 
 # function used to modify the latency to toxiproxy
 def modify(n):
@@ -70,7 +73,7 @@ def computation(n):
 
 def training():
     # N = number of iterations of the process
-    N = 2
+    N = 5
     generate_actions()
 
     z = 0
@@ -80,9 +83,9 @@ def training():
 
     for a in action_list:
         vector = []
-        print(a.label+" :\n")
+        print(a.label + " :\n")
         for i in range(0, N, 1):
-            print("iteration number "+str(i+1)+":\n")
+            print("iteration number " + str(i + 1) + ":\n")
 
             RT1, ET1, X1, NL1 = computation(a.source.mean_delay)
             print("first computation finished (source)")
@@ -92,7 +95,6 @@ def training():
             dRT = RT2 - RT1
             s = -metrics.func(dRT, metrics.response_time.ro)
             z = z + s
-
 
             dET = ET2 - ET1
             b = -metrics.func(dET, metrics.execution_time.ro)
@@ -113,27 +115,25 @@ def training():
 
         k = metrics.func(a.destination.availability - a.source.availability, metrics.availability.ro)
         vector.append(k)
-        print("impact vector for movement action " + a.label+" :\n")
+        print("impact vector for movement action " + a.label + " :\n")
         for v in vector:
-            print (v)
+            print(v)
 
         z = 0
         q = 0
         p = 0
         r = 0
 
-    # save impact vector for movement action
+        # save impact vector for movement action
         with open(a.name_file, "w") as f:
             for x in vector:
                 f.write(str(x) + "\n")
 
-    # save impact vector for copy action
+        # save impact vector for copy action
         with open("output_training/IC" + str(a.source.id) + str(a.destination.id) + ".txt", "w") as f:
             for x in vector:
                 f.write(str(x) + "\n")
-    print (colored("TRAINING COMPLETED.",'green'))
-
-
+    print(colored("TRAINING COMPLETED.", 'green'))
 
 
 training()

@@ -4,16 +4,19 @@ import threading
 import actions
 import math
 
+# time window in seconds
 T = 210
+
+# N = number of applications
 N = 3
+
 threshold = 0.3
 
 # create connection to connect to the database
-
 connection = pymysql.connect(host='127.0.0.1', user='root', port=3308, password='helloworld', db='db', autocommit=True)
 
-
-# method used to add controller
+'''
+# method used to add a controller
 def get_id():
     global connection
     cur = connection.cursor()
@@ -26,6 +29,7 @@ def get_id():
     c = cur.fetchone()[0]
     cur.close()
     actions.update_c_id(c)
+'''
 
 
 def insert_action(action, random):
@@ -35,9 +39,9 @@ def insert_action(action, random):
     t = int(time())
     print("time_stamp:" + str(t))
     if action.id != 0:
-        s = (actions.data_set_id, action.id, t, 1, actions.c_id, random,action.type)
+        s = (actions.data_set_id, action.id, t, 1, actions.c_id, random, action.type)
     else:
-        s = (actions.data_set_id, action.id, t, 0, actions.c_id, random,action.type)
+        s = (actions.data_set_id, action.id, t, 0, actions.c_id, random, action.type)
     cur.execute(sql1, s)
     connection.commit()
     sql2 = "SELECT LAST_INSERT_ID()"
@@ -95,8 +99,6 @@ def feedback(t_viol):
         r = (p, event_id)
         cur.execute(sql1, r)
         connection.commit()
-
-
 
         print("FEEDBACK LEFT: " + str(p))
         print("\n")

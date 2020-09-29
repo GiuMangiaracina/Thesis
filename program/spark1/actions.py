@@ -81,7 +81,7 @@ N1 = Node(1, 1, db.get_availability(1), db.get_latency(1, 1))
 N2 = Node(2, 1, db.get_availability(2), db.get_latency(1, 2))
 N3 = Node(3, 1, db.get_availability(3), db.get_latency(1, 3))
 
-#N4 = Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
+# N4 = Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
 
 
 node_list = [N1, N2, N3]
@@ -139,18 +139,19 @@ def set_state(n):
 def generate_actions(node_list):
     global total_action_list, cr_action_list, action_list
     id = 1
-    v=[0,0,0,0,0,0]
+    v = [0, 0, 0, 0, 0, 0]
     for n in node_list:
 
         for c in node_list:
             if (c.id != n.id):
 
                 if not os.path.exists("IM" + str(n.id) + str(c.id) + ".txt"):
-                    #os.mknod("IM" + str(n.id) + str(c.id) + ".txt")
-                    #np.savetxt("IM" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
+                    # os.mknod("IM" + str(n.id) + str(c.id) + ".txt")
+                    # np.savetxt("IM" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
                     return 0
 
-                a = Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,np.loadtxt("IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),
+                a = Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,
+                           np.loadtxt("IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),
                            "IM" + str(n.id) + str(c.id) + ".txt", cost_m, "IM" + str(n.id) + str(c.id))
                 action_list.append(a)
                 id = id + 1

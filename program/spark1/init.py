@@ -34,25 +34,25 @@ dc_status = 1
 
 penalty_factor = 0.33
 
+
 # this method initializes the application. It adds the proxy, adds the toxicity of type latency to it, and finally it starts the history server
 def init():
     print("Initializing")
-
 
     # add proxy
 
     with open('add.json', 'r') as jsonfile:
         json_content = json.load(jsonfile)
-    json_content["name"] = "minioProxy"+str(actions.c_id)
-    json_content["listen"] = "127.0.0.1:800"+str(actions.c_id)
+    json_content["name"] = "minioProxy" + str(actions.c_id)
+    json_content["listen"] = "127.0.0.1:800" + str(actions.c_id)
 
     with open('add.json', 'w') as jsonfile:
         json.dump(json_content, jsonfile, indent=4)
-    subprocess.call(["./addProxy.sh"],shell=True)
+    subprocess.call(["./addProxy.sh"], shell=True)
 
     # set initial latency
     # l = int(input ("\n"+"set toxic, latency: "+"\n"))
-    subprocess.call(shlex.split('./set.sh minioProxy'+str(actions.c_id)))
+    subprocess.call(shlex.split('./set.sh minioProxy' + str(actions.c_id)))
     # start the history server
 
     os.system("../sbin/start-history-server.sh ")
@@ -74,7 +74,8 @@ def modify(n):
 
     with open('template.json', 'w') as jsonfile:
         json.dump(json_content, jsonfile, indent=4)
-    subprocess.call(["./modify.sh"],shell=True)
+    subprocess.call(["./modify.sh"], shell=True)
+
 
 # method used to truncate floats (to max digits number )
 def truncate(number, digits) -> float:
@@ -124,18 +125,18 @@ def check(RT, ET, X, NL, n):
     else:
         dc_status = 1
 
-    #print the user goal. only the metrics belonging to the user goal are printed.
+    # print the user goal. only the metrics belonging to the user goal are printed.
     print("\n")
-    print ("Goal: RT < " + str(metrics.response_time.max) + " s AND A >= " + str(metrics.availability.min) + "%")
+    print("Goal: RT < " + str(metrics.response_time.max) + " s AND A >= " + str(metrics.availability.min) + "%")
     print("\n")
-    print ("Metric status: " + "\n")
+    print("Metric status: " + "\n")
     print("response time : " + str(response_time_status))
     # print ("latency : " + str(latency_status))
     # print("execution time : " + str(execution_time_status))
     # print("throughput : " + str(throughput_status))
     print("availability : " + str(availability_status))
     # print("data consistency : " + str(dc_status))
-    print ("\n")
+    print("\n")
 
     # Goal check
     if not (response_time_status and availability_status):
@@ -146,7 +147,7 @@ def check(RT, ET, X, NL, n):
         # the while below prevents cases in which there are two
         # simultaneous actions on the same data set.
         while db.check_computation():
-            print ("another controller is moving the data_set: wait.")
+            print("another controller is moving the data_set: wait.")
             block = 1
 
         if block == 1:
@@ -159,7 +160,6 @@ def check(RT, ET, X, NL, n):
         # start action selection process: create available action list
         actions.update_impacts()
         for a in actions.action_list:
-            
 
             if a.source.id == n.id and a.destination.disk == 1:
                 available_actions.append(a)
@@ -172,18 +172,18 @@ def check(RT, ET, X, NL, n):
         available_actions.extend(list)
         random.shuffle(available_actions)
 
-        #print ("Goal violated. Repair Action needed. Available actions: " + "\n")
-        print (colored('Goal violated. Repair Action needed. Available actions: ' + '\n', 'red'))
+        # print ("Goal violated. Repair Action needed. Available actions: " + "\n")
+        print(colored('Goal violated. Repair Action needed. Available actions: ' + '\n', 'red'))
         # draw a random number between 0 and 1
         z = random.uniform(0, 1)
 
-        #explore
+        # explore
         if z > 0.9:
             selected = random.choice(available_actions)
-            print (colored('Random action selected', 'yellow'))
-            #print ("Random action selected")
+            print(colored('Random action selected', 'yellow'))
+            # print ("Random action selected")
             rand = 1
-        #exploit
+        # exploit
         else:
 
             max = -2
@@ -205,7 +205,7 @@ def check(RT, ET, X, NL, n):
                     w_1 = metrics.w1
                     w_2 = metrics.w2
 
-                #handle the cases
+                # handle the cases
                 if (response_time_status == 0 and availability_status == 1):
 
                     # compute score (internal impact)
@@ -214,7 +214,7 @@ def check(RT, ET, X, NL, n):
 
                     # read counter from db (external impact)
                     c = db.read_counter(b)
-                    #compute global score
+                    # compute global score
                     score_p = score * (1 - penalty_factor * c)
 
                 elif (response_time_status == 1 and availability_status == 0):
@@ -224,7 +224,7 @@ def check(RT, ET, X, NL, n):
                     score = truncate(score, 2)
                     # read counter from db (external impact)
                     c = db.read_counter(b)
-                    #compute global score
+                    # compute global score
                     score_p = score * (1 - penalty_factor * c)
 
                 elif (response_time_status == 0 and availability_status == 0):
@@ -233,10 +233,10 @@ def check(RT, ET, X, NL, n):
                     score = truncate(score, 2)
                     # read counter from db (external impact)
                     c = db.read_counter(b)
-                    #compute global score
+                    # compute global score
                     score_p = score * (1 - penalty_factor * c)
 
-                print (str(b.description) + ". Internal score: " + str(score) + "; Global score_p:" + str(score_p))
+                print(str(b.description) + ". Internal score: " + str(score) + "; Global score_p:" + str(score_p))
 
                 if score_p > max:
                     max = score_p
@@ -245,88 +245,87 @@ def check(RT, ET, X, NL, n):
                 w_1 = 1
                 w_2 = 1
 
-        #print("\n" + "Selected action: " + str(selected.description))
+        # print("\n" + "Selected action: " + str(selected.description))
         print(colored('\n' + 'Selected action: ' + str(selected.description), 'yellow'))
-        #insert selected action into event table
+        # insert selected action into event table
         event_id = db.insert_action(selected, rand)
 
         print(str(event_id))
-        #call the method which will close the feedback process after T (except for null actions)
+        # call the method which will close the feedback process after T (except for null actions)
         if selected.id != 0:
             db.close_T(event_id)
-
 
         if selected.type == "move":
             # update position of data set
             db.update_data(actions.data_set_id, selected.destination.id)
-            #lock the shared block variable for 10 seconds ("execution time" of the action )
+            # lock the shared block variable for 10 seconds ("execution time" of the action )
             db.lock_computation()
             time.sleep(10)
             db.unlock_computation()
 
         elif selected.type == "copy":
-            #add new data set row
+            # add new data set row
             data_set_id = db.add_data(selected.destination.id)
-            #update application reference data set id
+            # update application reference data set id
             actions.update_data_set(data_set_id)
 
         elif selected.type == "change reference copy":
-            #update application reference data set id
+            # update application reference data set id
             actions.update_data_set(selected.id_data_set)
 
-        #retrieve data set position
+        # retrieve data set position
         n = db.set_data(actions.data_set_id)
 
         # start new computation
         if selected.id != 0:
             availability_old_state = actions.get_state().availability
-            #update state
+            # update state
             actions.set_state(n)
 
             RT2, ET2, X2, NL2 = computation_2(actions.state)
 
-            #calculate the delta
+            # calculate the delta
             delta.delta(RT, ET, X, NL, availability_old_state, RT2, ET2, X2, NL2, actions.state.availability, selected)
 
             p = check(RT2, ET2, X2, NL2, actions.state)
 
     else:
 
-        print (colored("Goal not violated.", 'green'))
+        print(colored("Goal not violated.", 'green'))
 
     return 1
 
 
 # Method used to start a computation. n =the node in which the data resides
 def computation(n):
-    #m = latency, calculated with a normal distribution of mean retrieved from the reference node
+    # m = latency, calculated with a normal distribution of mean retrieved from the reference node
     m = int(round(np.random.normal(n.mean_delay, 7)))
     if m <= 0:
         m = 0
-    #change latency of the proxy
+    # change latency of the proxy
     modify(m)
     print("\n")
-    #launch the spark application
-    subprocess.call(["./app.sh"],shell=True)
+    # launch the spark application
+    subprocess.call(["./app.sh"], shell=True)
 
     time.sleep(1)
 
     # retrieve the metrics of the completed computation from the monitoring program
     RT, ET, X, NL = monitoring.main()
-    #check the number of the copies existing in the environment
+    # check the number of the copies existing in the environment
     copies_number = db.check_dc()
-    #update dc metric
+    # update dc metric
     metrics.update_dc(copies_number)
-    print ("data consistency: " + str(metrics.dc))
-    print ("availability: " + str(actions.state.availability) + " %")
+    print("data consistency: " + str(metrics.dc))
+    print("availability: " + str(actions.state.availability) + " %")
 
     # check the status of the metrics
 
     r = check(RT, ET, X, NL, n)
 
     if r == 0:
-        #case in which there is a conflicting action selection process
-        print ("restart computation with updated position of data set.")
+        # case in which there is a conflicting action selection process
+        print("restart computation with updated position of data set.")
 
         return 0
 
@@ -339,7 +338,7 @@ def computation_2(n):
         m = 0
     modify(m)
     print("\n")
-    subprocess.call(["./app.sh"],shell=True)
+    subprocess.call(["./app.sh"], shell=True)
     time.sleep(1)
 
     # retrieve the metrics of the completed computation from the monitoring program
@@ -348,8 +347,8 @@ def computation_2(n):
     copies_number = db.check_dc()
     metrics.update_dc(copies_number)
 
-    print ("data consistency: " + str(metrics.dc))
-    print ("availability: " + str(actions.state.availability) + " %")
+    print("data consistency: " + str(metrics.dc))
+    print("availability: " + str(actions.state.availability) + " %")
 
     yield RT
     yield ET
@@ -358,36 +357,37 @@ def computation_2(n):
 
 
 def __main__():
-    #check if the application has been initialized -> needed only for the first time
+    # check if the application has been initialized -> needed only for the first time
     with open('goal.json', 'r') as jsonfile:
         json_content = json.load(jsonfile)
     if json_content['initialized'] == 0:
         init()
     else:
-        #generate action list
-        c=actions.generate_actions(actions.node_list)
-        if c==0:
-
-            print (colored("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE 'training.py' program.",'red'))
+        # generate action list
+        c = actions.generate_actions(actions.node_list)
+        if c == 0:
+            print(
+                colored("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE 'training.py' program.",
+                        'red'))
             sys.exit()
 
-        #fill initial gpw table
+        # fill initial gpw table
         if db.check_gpw_table() == 0:
             db.fill_in_gpw()
 
-
-        #infinite loop which start the computation
+        # infinite loop which starts the computations
         while 1:
             # time.sleep(random.randint(20,60))
             # int(round(np.random.normal(20, 7)))
-            #arrival rate
+            # arrival rate
             x = int(round(np.random.normal(15, 2)))
             if x < 0:
                 x = 0
             time.sleep(x)
-            #print ("Start APP 1;")
-            print (colored("Start APP "+str(actions.c_id), 'green'))
+            # print ("Start APP 1;")
+            print(colored("Start APP " + str(actions.c_id), 'green'))
             setting()
+
 
 # method used to lookup the file_table in order to set the position of data and map to node
 def setting():
@@ -398,11 +398,12 @@ def setting():
     print("reference copy id: " + str(actions.data_set_id))
     code = computation(actions.state)
 
-    print (str(code))
+    print(str(code))
     if code == 0:
         print("computation returned with code 0 ")
 
-#method used to instantiate at run-time the available CR actions
+
+# method used to instantiate at run-time the available CR actions
 def instantiate_cr_actions():
     list = []
     CR_actions = actions.cr_action_list
@@ -413,7 +414,7 @@ def instantiate_cr_actions():
             for a in CR_actions:
                 if row[1] == a.destination.id:
                     a.set_data_set(row[0])
-                    #derive impacts from associated movement actions
+                    # derive impacts from associated movement actions
                     string = 'IM' + str(source_node) + str(a.destination.id) + '.txt'
                     a.update_vector(string)
                     list.append(a)

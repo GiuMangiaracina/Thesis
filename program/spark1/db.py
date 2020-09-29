@@ -4,20 +4,25 @@ import threading
 import actions
 import math
 
+# time windows, measured in seconds
 T = 210
+
+# number of applications
 N = 3
+
 threshold = 0.3
 
 # create connection to connect to the database
 connection = pymysql.connect(host='127.0.0.1', user='root', port=3308, password='helloworld', db='db', autocommit=True)
 
 
+'''
 # method used to add controller
 
 def get_id():
     global connection
     cur = connection.cursor()
-    sql="INSERT INTO controller_id VALUES()"
+    sql = "INSERT INTO controller_id VALUES()"
 
     cur.execute(sql)
     connection.commit()
@@ -26,6 +31,7 @@ def get_id():
     c = cur.fetchone()[0]
     cur.close()
     actions.update_c_id(c)
+'''
 
 # method used to insert action event on db
 def insert_action(action, random):
@@ -33,18 +39,18 @@ def insert_action(action, random):
     cur = connection.cursor()
     sql1 = "INSERT INTO events (data_source,action,time_stamp,active,controller_id,random,action_type) VALUES (%s,%s,%s,%s,%s,%s,%s)";
     t = int(time())
-    print ("time_stamp:" + str(t))
+    print("time_stamp:" + str(t))
     if action.id != 0:
-        s = (actions.data_set_id, action.id, t, 1, actions.c_id, random,action.type)
+        s = (actions.data_set_id, action.id, t, 1, actions.c_id, random, action.type)
     else:
-        s = (actions.data_set_id, action.id, t, 0, actions.c_id, random,action.type)
+        s = (actions.data_set_id, action.id, t, 0, actions.c_id, random, action.type)
     cur.execute(sql1, s)
     connection.commit()
     sql2 = "SELECT LAST_INSERT_ID()"
     cur.execute(sql2)
     r = cur.fetchall()
     cur.close()
-    print ("PUBLISHED EVENT, id:" + str(r))
+    print("PUBLISHED EVENT, id:" + str(r))
     return r
 
 
@@ -57,7 +63,7 @@ def close_t(event_id):
     r = (event_id)
     cur.execute(sql, r)
     connection.commit()
-    print ("\n")
+    print("\n")
     print("CLOSED T of event " + str(event_id))
     update_counter(event_id)
     cur.close()
@@ -65,7 +71,7 @@ def close_t(event_id):
 
 def close_T(event_id):
     global T
-    print ("..START WAITING..")
+    print("..START WAITING..")
     timer = threading.Timer(T, close_t, args=(event_id))
     timer.start()
 
@@ -95,12 +101,8 @@ def feedback(t_viol):
         cur.execute(sql1, r)
         connection.commit()
 
-
-
-
-
         print("FEEDBACK LEFT: " + str(p))
-        print ("\n")
+        print("\n")
     cur.close()
 
 
@@ -147,7 +149,7 @@ def update_counter(event_id):
         z = (value[0] + 1, row[1])
         cur.execute(sql2, z)
         connection.commit()
-        print ("global feedback >= fixed threshold (" + str(threshold) + ")")
+        print("global feedback >= fixed threshold (" + str(threshold) + ")")
         print("UPDATED COUNTER VALUE :++ " + str(value[0] + 1))
     else:
         if value[0] != 0:
@@ -157,10 +159,10 @@ def update_counter(event_id):
             h = (value[0] - 1, row[1])
             cur.execute(sql3, h)
             connection.commit()
-            print ("global feedback < fixed threshold (" + str(threshold) + ")")
+            print("global feedback < fixed threshold (" + str(threshold) + ")")
             print("UPDATED COUNTER VALUE :-- " + str(value[0] - 1))
         else:
-            print ("counter not updated (0)")
+            print("counter not updated (0)")
 
     cur.close()
 
@@ -205,7 +207,8 @@ def add_data(id):
     cur.close()
     return r
 
-#this method returns the file_table content
+
+# this method returns the file_table content
 def lookup_data():
     global connection
     cur = connection.cursor()
@@ -226,7 +229,7 @@ def lock_computation():
     cur.execute(sql)
     connection.commit()
 
-    print ("resource acquired")
+    print("resource acquired")
     cur.close()
 
 
@@ -237,7 +240,7 @@ def unlock_computation():
     sql = "update computation_lock set Locked = 0"
     cur.execute(sql)
     connection.commit()
-    print ("resource released")
+    print("resource released")
     cur.close()
 
 
@@ -253,6 +256,7 @@ def check_computation():
     cur.close()
     return r
 
+
 # method used to update the availability of a given node
 def update_availability(node_id, value):
     global connection
@@ -262,6 +266,8 @@ def update_availability(node_id, value):
     cur.execute(sql, s)
     connection.commit()
     cur.close()
+
+
 # method used to retrieve the availability value of a given node
 def get_availability(node_id):
     global connection
@@ -274,7 +280,8 @@ def get_availability(node_id):
 
     return r
 
-#method used to count the number of existing copies of a data set
+
+# method used to count the number of existing copies of a data set
 def check_dc():
     global connection
     cur = connection.cursor()
@@ -286,7 +293,8 @@ def check_dc():
     cur.close()
     return r
 
-#this method returns the latency from a node with id =c_id and the node with id node_id
+
+# this method returns the latency from a node with id =c_id and the node with id node_id
 def get_latency(c_id, node_id):
     global connection
     cur = connection.cursor()
@@ -297,7 +305,8 @@ def get_latency(c_id, node_id):
     r = cur.fetchone()[0]
     return r
 
-#this method updates the latency from a node with id =c_id and the node with id node_id
+
+# this method updates the latency from a node with id =c_id and the node with id node_id
 def update_latency(node_id, node_target, value):
     global connection
     cur = connection.cursor()
@@ -309,35 +318,33 @@ def update_latency(node_id, node_target, value):
     cur.close()
 
 
-
 def add_node(node_id):
-
-    # add missing latencies between nodes -> -1 to fill in manually!
+    # add missing latencies between nodes -> fill in manually all the -1 values manually from the db GUI!
     global connection
     cur = connection.cursor()
 
     sql2 = 'SELECT COUNT(*) FROM latency WHERE node_ID = %s'
-    x =(node_id)
+    x = (node_id)
     cur.execute(sql2, x)
     m = cur.fetchone()[0]
 
     if m == 0:
 
-        sql='insert into latency (node_ID,node,value) values (%s,%s,%s)'
+        sql = 'insert into latency (node_ID,node,value) values (%s,%s,%s)'
         s = (node_id, node_id, 0)
         cur.execute(sql, s)
         for a in actions.node_list:
-            sql='insert into latency (node_ID,node,value) values (%s,%s,%s)'
+            sql = 'insert into latency (node_ID,node,value) values (%s,%s,%s)'
             s = (node_id, a.id, -1)
             cur.execute(sql, s)
-            sql1='insert into latency (node_ID,node,value) values (%s,%s,%s)'
-            s = (a.id,node_id, -1)
+            sql1 = 'insert into latency (node_ID,node,value) values (%s,%s,%s)'
+            s = (a.id, node_id, -1)
             cur.execute(sql1, s)
         connection.commit()
-    print("Node with ID "+str(node_id)+" added. Please add the node to the node list, and fill in the -1 values in the database.")
+    print("Node with ID " + str(
+        node_id) + " added. Please add the node to the node list, and fill in the -1 values in the database.")
 
-
-    #add availability node-> -1 to fill in
+    # add availability node-> -1 to fill in
 
     sql2 = 'insert into availability (node, value) values (%s,%s)'
     p = (node_id, -1)
@@ -345,27 +352,27 @@ def add_node(node_id):
     connection.commit()
     cur.close()
 
+
 def fill_in_gpw():
     global connection
     cur = connection.cursor()
     for a in actions.total_action_list:
-        sql='insert into global_counter (action,id,value) values (%s,%s,%s)'
-        p=(a.label,a.id,0)
+        sql = 'insert into global_counter (action,id,value) values (%s,%s,%s)'
+        p = (a.label, a.id, 0)
         cur.execute(sql, p)
         connection.commit()
     cur.close()
-
 
 
 def check_gpw_table():
     global connection
     cur = connection.cursor()
 
-    sql='SELECT EXISTS (SELECT 1 FROM global_counter);'
+    sql = 'SELECT EXISTS (SELECT 1 FROM global_counter);'
 
     cur.execute(sql)
 
-    code= cur.fetchone()[0]
+    code = cur.fetchone()[0]
     cur.close()
     return code
 
