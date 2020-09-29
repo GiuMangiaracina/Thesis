@@ -88,6 +88,9 @@ This command will start the three applications, whose containers name are respec
 
 At any time, to login within each of the containers, type in the terminal the following command : ```docker exec -it sparkN bash```, substituting the value of N with the target container name (1, 2, 3, ..). To login simultaneously into the three containers, execute the start_bash_win.cmd or start_bash.sh program.
 
+
+To verify in which containers you are, just type ``` ls ``` and verify the presence of an empty file among the files in the directory named 'SPARK N.txt', in which the N identifies the ID of the application.
+
 ### minIO server setup
 1. Browse to 'http://127.0.0.1:9000', and login into minIO server instance using the following credentials: 
 - username = minio ;
@@ -186,8 +189,12 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
        
 - execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
 - execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional).
-At this point you can start the program, following the [usage](#usage) section.
+Since the offline training can require a lot of time, you can store its output and just include it for the successive executions of the system. You can do it by coping in a local directory the folder containing the results:  ``` docker cp spark1:/usr/spark-2.4.1/bin/output_training ./ ``` 
+then, copy all the .txt files into the corresponding spark directory, for example spark1 for the first instance. Overwrite all the eventually files with the same name with the newer. Apply this procedure for all the spark instances. Remember that the results of the training will be different from an application to another, because the applications are virtually placed in different nodes. Consequenly, you have to store the output files into the right directory corresponding to the application.
 
+
+
+At this point you can start the program, following the [usage](#usage) section.
 ## Add other applications to the system
 
 [proxy]: https://github.com/Shopify/toxiproxy
