@@ -119,6 +119,11 @@ The training step is used to produce the set of initial impact vectors, which re
  - (optional)  type ``` nano training.py ``` and modify the constant N, to configure the number of iterations of the training step, namely the number of times each action is tried. The result stored in the impact vectors will be the average of the N steps. 
  - In each of the terminals, type ``` python training.py ``` and wait until its completion. (Note that the required time can be quite long, depending on the number of nodes in the network and to the N value);
  - in each of the terminals, type ``` cp -a /usr/spark-2.4.1/bin/output_training/. ./ ```, in order to copy the results of the training to the correct directory (/usr/spark-2.4.1/bin);
+ 
+Since the offline training can require a lot of time, you can store its output and just include it for the successive executions of the system. You can do it by coping in a local directory the folder containing the results:  ``` docker cp spark1:/usr/spark-2.4.1/bin/output_training ./ ``` 
+then, copy all the .txt files into the corresponding spark directory, for example spark1 for the first instance. Overwrite all the eventually files with the same name with the newer. Apply this procedure for all the spark instances. Remember that the results of the training will be different from an application to another, because the applications are virtually placed in different nodes. Consequenly, you have to store the output files into the right directory corresponding to the application.
+ 
+ 
  - close the terminals.
  
 ## Usage
@@ -189,8 +194,8 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
        
 - execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
 - execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional).
-Since the offline training can require a lot of time, you can store its output and just include it for the successive executions of the system. You can do it by coping in a local directory the folder containing the results:  ``` docker cp spark1:/usr/spark-2.4.1/bin/output_training ./ ``` 
-then, copy all the .txt files into the corresponding spark directory, for example spark1 for the first instance. Overwrite all the eventually files with the same name with the newer. Apply this procedure for all the spark instances. Remember that the results of the training will be different from an application to another, because the applications are virtually placed in different nodes. Consequenly, you have to store the output files into the right directory corresponding to the application.
+Eventually store the results as explained in the section, for the next executions.
+
 
 
 
