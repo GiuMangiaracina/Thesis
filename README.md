@@ -108,9 +108,9 @@ In the 'program' directory:
  This command initializes the proxies and the Spark History Servers.
 
 After this initialization, the [Spark History Servers][history server] of the three applications, which show the properties of the computations, are accessible at the following addresses:
-- 'http://127.0.0.1:18080' (Spark1);
-- 'http://127.0.0.1:18081' (Spark2);
-- 'http://127.0.0.1:18082' (Spark3);
+- 'http://127.0.0.1:18081' (Spark1);
+- 'http://127.0.0.1:18082' (Spark2);
+- 'http://127.0.0.1:18083' (Spark3);
 
 ## Offline training(optional)
 The training step is used to produce the set of initial impact vectors, which represent the effects of the actions on the various QoS metrics.
@@ -209,17 +209,17 @@ Eventually store the results as explained in the section, for the next execution
 At this point you can start the program, following the [usage](#usage) section.
 
 ## Add other applications to the system
-To add a new application to the system, it is necessary to add even an associated node to the system, where the application is virtually running.
+To add a new application to the system, it is necessary to add new files and configure them before to built the system.
+
+Furthermore, it is necessary to add even an associated node to the system, where the application is virtually running.
 
 
 Remembering that all the nodes are identified by an ID, with an increasing number (1,2,3,..). 
 For convention, the associated applications have the same ID.
 So, in order to add new applications and nodes, you have to start with an associated ID from 4 onwards. 
-Follow these instructions (in general, you can use the previous 3 applications as guide, substituting the configuration with the right ID in the various files), for each of the new applications.
+Follow these instructions (in general, you can use the previous 3 applications as guide, substituting the configuration with the right ID in the various files), for each of the new applications. When you read N, substitute with the correct ID (4, 5 ,...) value:
 
-When you read N, substitute with the correct ID (4, 5 ,...) value:
-
--	duplicate a spark directory in the 'program' folder. Since each application have different requirements ( you can read them above), you can duplicate the folder with the metrics of interest for the new application. Then you can modify the min/max threesholds changing the parameters in the 'metrics.py' file.
+-	duplicate a spark directory in the 'program' folder. Since each application have different requirements (you can read them above), you can duplicate the folder with the metrics of interest for the new application. Then you can modify the min/max threesholds changing the parameters in the 'metrics.py' file.
 
 -	rename the folder with 'sparkN';
 
@@ -262,7 +262,11 @@ When you read N, substitute with the correct ID (4, 5 ,...) value:
     spark.history.ui.port=1808N 
 ```
 -	Finally, add a column named 'feedback_N 'to the 'events' table in the database, through the database GUI.
-At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications). Remember that for each application, it is necessary to add the node with the same ID. So, for example, if you want to add another application, its ID will be 4, and the associated ID of the node will be 4.
+At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications). Remember that for each application, it is necessary to add the node with the same ID. So, for example, if you want to add another application in addition to the three existing, its ID will be 4, and the associated ID of the node will be 4.
+
+The [offline training step](#offline-trainingoptional) must be executed.
+
+For the usage, note what said for the other applications, just substitute the ID value with the right one. For example, given an application with ID 4, its Spark History Server will be accessible from the address: 'http://127.0.0.1:18084' .
 
 
 
