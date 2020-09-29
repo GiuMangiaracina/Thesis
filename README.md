@@ -207,6 +207,55 @@ Eventually store the results as explained in the section, for the next execution
 
 At this point you can start the program, following the [usage](#usage) section.
 ## Add other applications to the system
+To add a new app, with id N>3:
+-	duplicate a spark directory
+-	rename as sparkN
+
+-	inside docker-compose.yml, add at the bottom:
+ ```
+ spark:
+        build : ./sparkN/
+                 
+        network_mode: host
+
+        stdin_open : true
+
+        tty : true
+        
+        container_name : sparkN
+```
+-	add a column named 'feedback_N 'to the 'events' table in the database;
+
+-	inside the folder 'sparkN', modify these values, substituing N with the id of the application:
+-	actions.py-> ```c_id = N ```
+-	app.sh: 
+``` { time spark-submit --master local[2] --conf spark.hadoop.fs.s3a.endpoint=http://127.0.0.1:800N script.py 2>1 ;} 2>> time.log ```
+
+-	db : inside feedback()function, 
+``` sql2 = "update events set sum_feedback = sum_feedback + %s  where id = % s and feedback_N = 0"
+        q = (p, event_id)
+        cur.execute(sql2, q)
+        connection.commit()
+        sql1 = "update events set feedback_N = %s where id = % s and feedback_N = 0"
+        r = (p, event_id)
+        cur.execute(sql1, r)
+        connection.commit()
+```
+-in set.sh: 
+``` curl -X POST http://127.0.0.1:8474/proxies/minioProxyN/toxics -d "@template.json" ```
+
+-In spark-defaults.conf, modify:
+
+``` spark.hadoop.fs.s3a.endpoint=http://127.0.0.1:800N
+    spark.history.ui.port=1808N 
+```
+
+
+
+
+
+
+
 
 [proxy]: https://github.com/Shopify/toxiproxy
 [minio]: https://min.io/
