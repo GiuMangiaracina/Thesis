@@ -157,8 +157,8 @@ The availability properties (in percentage) are metadata associated to each node
 The following Figures shows an example of configuration:
 
 
-![](https://github.com/GiuMangiaracina/Thesis/blob/master/latency.png)
-![](https://github.com/GiuMangiaracina/Thesis/blob/master/availability.png)
+![](https://github.com/GiuMangiaracina/Thesis/blob/master/latency.PNG)
+![](https://github.com/GiuMangiaracina/Thesis/blob/master/availability.PNG)
 
 
 6. Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
