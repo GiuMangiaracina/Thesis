@@ -33,7 +33,7 @@ In the following are illustrated the steps to start the three applications, acco
 
 ### Table of contents
 - [Prerequisites:](#prerequisites)
-- [Installation :](#installation)
+- [Installation :](#installation-)
   * [Database setup (mySQL server + phpMyAdmin )](#database-setup-mysql-server--phpmyadmin-)
   * [Program setup](#program-setup)
   * [minIO server setup](#minio-server-setup)
@@ -136,7 +136,7 @@ It is assumed that applications reach convergence when no new corrective actions
 To add additional empty nodes to the network, i.e., without running applications, follow these instructions.
 First of all, the nodes are identified by an ID, which for convention is an increasing number (1,2,3,..). In order to add nodes, you have to start from 4 onwards:
 
-1. follow all the [Installation](#installation) steps.
+1. follow all the [Installation](#installation-) steps.
 
 2. type in a terminal window, in order to login within the first application: ``` docker exec -it spark1 bash ```
 3. create and write the contenent of a new file : ``` nano file.py ```.
