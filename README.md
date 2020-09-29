@@ -184,14 +184,19 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
 
 6. Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
 7. Repeat the following step in each of the the terminals:
--  type: ``` actions.py ``` and add the new nodes to the configuration, by adding these lines to the files, for each of the nodes that you want to add :
- ``` N4 = Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
-     N5= ....
+-  type: ``` actions.py ``` and add the new nodes to the configuration, by adding these lines to the files modifying the ID value with the id of the current application (1, 2, 3), for each of the nodes that you want to add :
+ ``` 
+ # substitute
+     N4 = Node(4, 1, db.get_availability(4), db.get_latency(ID, 4))
+     N5 = Node(5, 1, db.get_availability(5), db.get_latency(ID, 5))
      
      # add the nodes to the existing node list:
         node_list = [...., N4, N5] 
 ```
-       
+      
+      
+  note that the id of the applications corresponds to the value of the 'c_id' variable set in the 'actions.py' file.
+  
 - execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
 - execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional).
 Eventually store the results as explained in the section, for the next executions.
