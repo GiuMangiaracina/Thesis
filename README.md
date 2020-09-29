@@ -102,7 +102,7 @@ To verify in which containers you are, just type ``` ls ``` and verify the prese
 In the 'program' directory:
 
 - for Windows users: execute 'start_win.cmd'and wait until its completion;
-- for Linux users, once logged as root user: 
+- for Linux users: 
 1. execute the file 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
 2. click on the file 'start.sh'and wait until its completion.
  This command initializes the proxies and the Spark History Servers.
@@ -157,7 +157,8 @@ The function db.add_node(ID), adds a node with id ID in the system. In particula
 
 For example, to add two nodes with ID 4 and 5 to the network, write in the file just created:
 
-``` import db
+``` 
+import db
 import actions
 
 # add node 4
