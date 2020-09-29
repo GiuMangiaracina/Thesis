@@ -139,9 +139,11 @@ First of all, the nodes are identified by an ID, which for convention is an incr
 1. follow the [db setup step] [#database-setup--mysql-server---phpmyadmin--] 
 
 2. type in a terminal window, in order to login within the first application: ``` docker exec -it spark1 bash ```
-3. create and write the contenent of a new file : ``` nano file.py ```
+3. create and write the contenent of a new file : ``` nano file.py ```.
 
-the function used, db.add_node(ID), adds a node with id ID in the system. For example, to add two nodes with ID 4 and 5 to the network, write in the file just created:
+The function db.add_node(ID), adds a node with id ID in the system. In particular, it adds to the 'latency' table all the possible combinations among the nodes in the network (present in the node_list), and the rows related to the availavilities values in the 'avaialability' table. 
+
+For example, to add two nodes with ID 4 and 5 to the network, write in the file just created:
 
 ``` import db
 import actions
@@ -155,21 +157,22 @@ actions.node_list.append(N4)
 
 # add node 5
 db.add_node(5)
+.....
    ``` 
-4. save the file and execute it by typing ``` python file.py ```;
-
-5. go to tables 'latency' and 'availability' from the GUI db application, and fill in all the fields with value '-1' with the desired parameters.
-Eventually, modify the other values.
+4. save the file and execute it by typing ``` python file.py ``` in the terminal window;
+ 
+5. go to tables 'latency' and 'availability' from the GUI of the database application, and fill in all the fields with value '-1' with the desired parameters.
+Eventually, modify the other values in the tables.
 In the 'latency' table, each row contains the mean latency in ms between each pair of nodes, identified by their unique ID (node_ID -> node).
 Note that these are only averages values, since at run-time it is used a gaussian distribution with this mean and a large variance. For convention, set the values associated to the same pairs of nodes to the same values, in order to create symmetric properties. 
 The availability properties (in percentage) are metadata associated to each node.
-The following Figures shows an example of configuration:
+The following Figures show an example of configuration:
 
 
 ![](https://github.com/GiuMangiaracina/Thesis/blob/master/latency.PNG)
 ![](https://github.com/GiuMangiaracina/Thesis/blob/master/availability.PNG)
 
-In this configuration, the added node with ID 4 has a mean latency of 2000 ms to node 1, of 1000 ms to node 2, of 500 ms to node 3 and finally of 200 ms to node 5.  Moreover, it is a mean availability of 80 % .
+In this configuration, the added node with ID 4 has a mean latency of 2000 ms to node 1, of 1000 ms to node 2, of 500 ms to node 3 and finally of 200 ms to node 5.  Moreover, the node has a mean availability of 80 % .
 
 6. Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
 7. Repeat the following step in each of the the terminals:
@@ -181,7 +184,7 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
         node_list = [...., N4, N5] 
 ```
        
- - execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
+- execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
 - execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional).
 At this point you can start the program, following the [usage](#usage) section.
 
