@@ -13,11 +13,11 @@ The algorithm uses some ML techiniques, and it is capable of adapting to the cha
 For the implementation, the applications and the tools used run in the form of containerized applications, based on built Docker IMGs.
 An application is considered as composed by three main parts: the processing component (Spark computation), the decision system and the monitoring system. The latters (and in general all the logic behind the system) are implemented through Python programs which resides within the containers of the spark instances.  
 
-In order to implement the algorithm and configure the environment and its properties, an instance of [mySQL server][mysql] is used, accessible from a [phpMyAdmin][dbgui]application.
+In order to implement the algorithm and configure the environment and its properties, an instance of [mySQL server][mysql] is used, accessible from a [phpMyAdmin][dbgui] application.
 
 The initial informations about the quality of the actions (internal impacts) are learned through an Offline Learning, executed through an automated program (training.py).
 
-The provided distributed networks of nodes is composed by three nodes, identified by an ID (1, 2, 3) each of it hosting an application which has its own QoS requirements.
+The provided distributed networks of nodes is composed by three nodes, identified by an ID (1, 2, 3), each of it hosting an application which has its own QoS requirements.
 The selected QoS requirements of each applications are the following:
 
 - Spark 1: Response time ≤ 35 s AND Availability ≥ 95%; 
@@ -47,13 +47,13 @@ In the following are illustrated the steps to start the three applications, acco
 The following Figure shows the architecture of the system, after performing all the installation steps:
 ![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture.png)
 
-Modifying the values from the database, it is possible to change at run-time the properties of the environment, namely the availability and the latency among the nodes.
+Modifying the values from the GUI of the database, it is possible to change at run-time the properties of the environment, namely the availability (metadata associated to each node) and the latency (in ms)among the nodes.
 Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, the offline learning must be executed, in order to setup properly the information about the initial impacts.
 
 
 ## Prerequisites:
 - a working [Docker][docker] installation (for 64-bit systems);
-- docker-compose installed  (to install it on Linux systems, type 'sudo apt install docker-compose' in the terminal.);
+- docker-compose installed  (to install it on Linux systems, type  ```sudo apt install docker-compose  ``` in the terminal.);
 - for Linux users, xterm installed (to install it, type 'sudo apt-get install xterm' in the terminal.).
 - for Windows users which use Docker Toolbox (legacy solution for Windows versions different from Windows 10 Professional and Enterprise 64-bit):
  1. determine the IP of your Docker virtual machine by running: 'docker-machine ip' after starting docker;
@@ -134,13 +134,14 @@ It is assumed that applications reach convergence when no new corrective actions
 
 ## Add other nodes to the network (without running applications)
 To add additional empty nodes to the network, i.e., without running applications, follow these instructions.
-First of all, the nodes are identified for convention with an increasing number (1,2,3,..). In order to add nodes from 4 onwards:
-1. follow the db setup step 
+First of all, the nodes are identified by an ID, which for convention is an increasing number (1,2,3,..). In order to add nodes, you have to start from 4 onwards:
 
-2. type in a terminal window, in order to login within the first application: ``` docker exec -it sparkN bash docker exec -it spark1 bash ```
+1. follow the [db setup step] [#database-setup--mysql-server---phpmyadmin--] 
+
+2. type in a terminal window, in order to login within the first application: ``` docker exec -it spark1 bash ```
 3. create and write the contenent of a new file : ``` nano file.py ```
 
-the function used, db.add_node(ID), adds a node with id ID in the system. For example, to add to nodes with ID 4 and 5, write:
+the function used, db.add_node(ID), adds a node with id ID in the system. For example, to add two nodes with ID 4 and 5 to the network, write in the file just created:
 
 ```import db
    db.add_node(4)
@@ -149,21 +150,30 @@ the function used, db.add_node(ID), adds a node with id ID in the system. For ex
 4. save the file and execute it by typing ``` python file.py ```;
 
 5. go to tables 'latency' and 'availability' from the GUI db application, and fill in all the fields with value '-1' with the desired parameters.
-Eventually even the others.
-In the 'latency' table, each row contains the mean latency between each pair of nodes, identified by their unique ID. Note that these are only averages values, since at run-time it is used a gaussian distribution with this mean and a large variance.
+Eventually, modify the other values.
+In the 'latency' table, each row contains the mean latency in ms between each pair of nodes, identified by their unique ID.
+Note that these are only averages values, since at run-time it is used a gaussian distribution with this mean and a large variance. For convention, set the values associated to the same pairs of nodes to the same values, in order to create symmetric properties. 
+The availability properties (in percentage) are metadata associated to each node.
+The following Figures shows an example of configuration:
+
+
+![](https://github.com/GiuMangiaracina/Thesis/blob/master/latency.png)
+![](https://github.com/GiuMangiaracina/Thesis/blob/master/availability.png)
+
 
 6. Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
 7. Repeat the following step in each of the the terminals:
--  type: ``` actions.py ``` and add the new nodes to the configuration, by adding these lines to the files :
+-  type: ``` actions.py ``` and add the new nodes to the configuration, by adding these lines to the files, for each of the nodes that you want to add :
  ``` N4 = Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
      N5= ....
-      # add to the existing node list:
+     
+     # add to the existing node list:
         node_list = [...., N4, N5] 
 ```
        
  - execute 'start_win.cmd' or 'start.sh' program. wait until its completion.
 - execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional).
-At this point you can start the program, following the [usage](#usage) section
+At this point you can start the program, following the [usage](#usage) section.
 
 ## Add other applications to the system
 
