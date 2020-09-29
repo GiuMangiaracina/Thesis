@@ -116,13 +116,16 @@ After this initialization, the [Spark History Servers][history server] of the th
 The training step is used to produce the set of initial impact vectors, which represent the effects of the actions on the various QoS metrics.
  Since the the applications contains already the output of the training (IMXY/ICXY/ICRY.txt text files), it is not necessary to re-execute the training program if the initial configuration is maintained. However, if big changes to the properties are executed (during the db setup step), it is necessary to re-execute the training step. Moreover, since the computation performances may vary from a machine to another, is preferable to perform anyway this step.
  
- - Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
+ - Execute the start_bash_win.cmd or start_bash.sh program in order to 
+ 
+ 
+ within the three containers;
  - (optional)  type ``` nano training.py ``` and modify the constant N, to configure the number of iterations of the training step, namely the number of times each action is tried. The result stored in the impact vectors will be the average of the N steps. 
  - In each of the terminals, type ``` python training.py ``` and wait until its completion. (Note that the required time can be quite long, depending on the number of nodes in the network and to the N value);
  - in each of the terminals, type ``` cp -a /usr/spark-2.4.1/bin/output_training/. ./ ```, in order to copy the results of the training to the correct directory (/usr/spark-2.4.1/bin);
  
 Since the offline training can require a lot of time, you can store its output and just include it for the successive executions of the system. You can do it by coping in a local directory the folder containing the results:  ``` docker cp spark1:/usr/spark-2.4.1/bin/output_training ./ ``` 
-then, copy all the .txt files into the corresponding spark directory, for example spark1 for the first instance. Overwrite all the eventually files with the same name with the newer. Apply this procedure for all the spark instances. Remember that the results of the training will be different from an application to another, because the applications are virtually placed in different nodes. Consequenly, you have to store the output files into the right directory corresponding to the application.
+then, copy all the .txt files into the corresponding spark directory, for example spark1 for the first instance. Overwrite all the eventually files with the same name with the newer. Apply this procedure for all the spark instances. Remember that the results of the training will be different from an application to another, because the applications are virtually placed in different nodes. Consequenly, you have to store the output files into the right directory corresponding to the application
  
  
  - close the terminals.
@@ -130,8 +133,8 @@ then, copy all the .txt files into the corresponding spark directory, for exampl
 ## Usage
 In the 'program' directory, re-execute the following program:
 - for Windows users:
-click on 'start_win.cmd';
-- for Linux users:
+execute 'start_win.cmd';
+- for Linux users, once logged as root user (sudo su):
 click on 'start.sh' .
 
 This command starts the system, and executes in parallel the computations, showing them on three different terminal windows.
@@ -189,14 +192,16 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
 
 6. Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
 7. Repeat the following step in each of the the terminals:
--  type: ``` actions.py ``` and add the new nodes to the configuration, by adding these lines to the files modifying the ID value with the id of the current application (1, 2, 3), for each of the nodes that you want to add :
+-  type: ``` nano actions.py ``` and add the new nodes to the configuration, by adding these lines to the files modifying the ID value with the id of the current application (1, 2, 3), for each of the nodes that you want to add, and adding them to the list of nodes:
  ``` 
- # substitute
-     N4 = Node(4, 1, db.get_availability(4), db.get_latency(ID, 4))
-     N5 = Node(5, 1, db.get_availability(5), db.get_latency(ID, 5))
-     
-     # add the nodes to the existing node list:
-        node_list = [...., N4, N5] 
+ # list of the available nodes in the net
+ ..
+ 
+ N4 = Node(4, 1, db.get_availability(4), db.get_latency(ID, 4))
+ N5 = Node(5, 1, db.get_availability(5), db.get_latency(ID, 5))
+
+ # add the nodes to the existing node list:
+ node_list = [...., N4, N5] 
 ```
       
       
