@@ -40,7 +40,7 @@ In the following are illustrated the steps to start the three applications, acco
   * [Initialization](#initialization)
 - [Offline training(optional)](#offline-trainingoptional)
 - [Usage](#usage)
-- [Add other nodes to the network (without running applications)](#add-other-nodes-to-the-network--without-running-applications-)
+- [Add other nodes to the network (without running applications)](#add-other-nodes-to-the-network--without-running-applications)
 - [Add other applications to the system](#add-other-applications-to-the-system)
 
 
