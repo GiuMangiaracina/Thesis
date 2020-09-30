@@ -151,7 +151,9 @@ to stop all the containers, once located from the terminal respectively in the '
 To add additional empty nodes to the network, i.e., without running applications, follow these instructions.
 First of all, the nodes are identified by an ID, which for convention is an increasing number (1,2,3,..). In order to add nodes, you have to start from 4 onwards:
 
-1.create and write the contenent of a new python file (e.g. file.py)
+
+1. follow all the [Installation](#installation-) steps.
+2. type in a terminal window, in order to login within the first application: ``` docker exec -it spark1 bash ``` and create and write the contenent of a new python file (e.g. file.py) ``` nano file.py ``` .
 
 The function db.add_node(ID), adds a node with id ID in the system. In particular, it adds to the 'latency' table all the possible combinations among the nodes in the network (present in the node_list), and the rows related to the availavilities values in the 'avaialability' table. 
 
@@ -160,16 +162,23 @@ For example, to add two nodes with ID 4 and 5 to the network, write in the file 
 ``` 
 import db
 import actions
+
+# list of already existing nodes
 N1 = actions.Node(1, 1, db.get_availability(1), db.get_latency(1, 1))
 N2 = actions.Node(2, 1, db.get_availability(2), db.get_latency(1, 2))
 N3 = actions.Node(3, 1, db.get_availability(3), db.get_latency(1, 3))
 
 node_list = [N1, N2, N3]
+
+#new nodes:
+
 # add node 4
 db.add_node(4)
 # add node to the list of nodes
 N4 = actions.Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
 node_list.append(N4)
+
+#add node 5
 db.add_node(5)
 N5 = actions.Node(5, 1, db.get_availability(5), db.get_latency(1, 5))
 node_list.append(N5)
@@ -179,26 +188,9 @@ In case you want to initialize randomly the latencies among the nodes, add to th
 ``` 
 db.initialize_random(node_list)
 ``` 
-
-2. save the file and put it inside the spark1 directory. 
-3. add the new nodes to the configuration, by adding these lines to the files ' actions.py' of each application, modifying the ID value with the id of the current application (1, 2, 3), for each of the nodes that you want to add, and adding them to the list of nodes:
- ``` 
- # list of the available nodes in the net
- ..
+Save the file and execute it by typing ``` python file.py ```.
  
- N4 = Node(4, 1, db.get_availability(4), db.get_latency(ID, 4))
- N5 = Node(5, 1, db.get_availability(5), db.get_latency(ID, 5))
-
- # add the nodes to the existing node list:
- node_list = [...., N4, N5] 
-```
-note that the id of the applications corresponds to the value of the 'c_id' variable set in the 'actions.py' file.
-
-4. follow all the [Installation](#installation-) steps.
-
-5. type in a terminal window, in order to login within the first application: ``` docker exec -it spark1 bash ``` and execute the file by typing ``` python file.py ``` in the terminal window;
- 
-5. go to tables 'latency' and 'availability' from the GUI of the database application, and fill in all the fields with value '-1' with the desired parameters.
+3. Go to tables 'latency' and 'availability' from the GUI of the database application, and fill in all the fields with value '-1' with the desired parameters.
 Eventually, modify the other values in the tables.
 In the 'latency' table, each row contains the mean latency in ms between each pair of nodes, identified by their unique ID (node_ID -> node).
 Note that these are only averages values, since at run-time it is used a gaussian distribution with this mean and a large variance. For convention, set the values associated to the same pairs of nodes to the same values, in order to create symmetric properties. 
@@ -211,7 +203,20 @@ The following Figures show an example of configuration:
 
 In this configuration, the added node with ID 4 has a mean latency of 2000 ms to node 1, of 1000 ms to node 2, of 500 ms to node 3 and finally of 200 ms to node 5.  Moreover, the node has a mean availability of 80 % .
 
-6. Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers, and execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional). Eventually store the results as explained in the section, for the next executions.
+4. Within each container (Execute the start_bash_win.cmd or start_bash.sh program), open the file 'actions.py' by typing ``` nano actions.py' ``` and add the new nodes to the configuration, by adding these lines. modify the ID value with the id of the current application (1, 2, 3), and add them to the list of nodes:
+ ``` 
+ # list of the available nodes in the net
+ ..
+ 
+ N4 = Node(4, 1, db.get_availability(4), db.get_latency(ID, 4))
+ N5 = Node(5, 1, db.get_availability(5), db.get_latency(ID, 5))
+
+ # add the nodes to the existing node list:
+ node_list = [...., N4, N5] 
+ ``` 
+Note that the id of the applications corresponds to the value of the 'c_id' variable set in the 'actions.py' file.
+
+5. Within each container, execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional). Eventually store the results as explained in the section, for the next executions.
 
 
 At this point you can start the program, following the [usage](#usage) section.
@@ -305,11 +310,6 @@ At this point, you can follow the steps of the [add nodes section](#add-other-no
 The [offline training step](#offline-trainingoptional) must be executed.
 
 For the usage, note what said for the other applications, just substitute the ID value with the right one. For example, given an application with ID 4, its Spark History Server will be accessible from the address: 'http://127.0.0.1:18084' .
-
-
-
-
-
 
 
 [proxy]: https://github.com/Shopify/toxiproxy
