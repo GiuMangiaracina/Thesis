@@ -163,25 +163,17 @@ For example, to add two nodes with ID 4 and 5 to the network, write in the file 
 import db
 import actions
 
-# list of already existing nodes
-N1 = actions.Node(1, 1, db.get_availability(1), db.get_latency(1, 1))
-N2 = actions.Node(2, 1, db.get_availability(2), db.get_latency(1, 2))
-N3 = actions.Node(3, 1, db.get_availability(3), db.get_latency(1, 3))
-
-node_list = [N1, N2, N3]
-
 #new nodes:
 
 # add node 4
 db.add_node(4)
 # add node to the list of nodes
 N4 = actions.Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
-node_list.append(N4)
-
-#add node 5
+actions.node_list.append(N4)
 db.add_node(5)
 N5 = actions.Node(5, 1, db.get_availability(5), db.get_latency(1, 5))
-node_list.append(N5)
+actions.node_list.append(N5)
+#db.initialize_random(node_list)
 
    ```  
 In case you want to initialize randomly the latencies among the nodes, add to the end of the file this line:
@@ -264,11 +256,6 @@ Follow these instructions (in general, you can use the previous 3 applications a
 N1 = Node(1, 1, db.get_availability(1), db.get_latency(N, 1))
 N2 = Node(2, 1, db.get_availability(2), db.get_latency(N, 2))
 N3 = Node(3, 1, db.get_availability(3), db.get_latency(N, 3))
-...
-
-def update_state(node):
-    ...
-    state.mean_delay = db.get_latency(N, node.id)
 
  ```
  - in 'add.jon' :
