@@ -264,8 +264,12 @@ Follow these instructions (in general, you can use the previous 3 applications a
 N1 = Node(1, 1, db.get_availability(1), db.get_latency(N, 1))
 N2 = Node(2, 1, db.get_availability(2), db.get_latency(N, 2))
 N3 = Node(3, 1, db.get_availability(3), db.get_latency(N, 3))
-..
- 
+...
+
+def update_state(node):
+    ...
+    state.mean_delay = db.get_latency(N, node.id)
+
  ```
  - in 'add.jon' :
   ```
