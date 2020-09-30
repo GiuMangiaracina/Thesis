@@ -235,7 +235,7 @@ Follow these instructions (in general, you can use the previous 3 applications a
 -	duplicate a spark directory in the 'program' folder. Since each application have different requirements (you can read them above), you can duplicate the folder with the metrics of interest for the new application. Then you can modify the min/max thresholds changing the parameters in the 'metrics.py' file.
 
 -	rename the folder with 'sparkN';
-- add a column named 'feedback_N 'to the 'events' table in the database, through the database GUI.
+
 
 -	open the 'docker-compose.yml' file in the 'program' folder, and add at the bottom the following lines for each application, necessary to build the new container:
  ```
@@ -305,7 +305,9 @@ curl -X POST http://127.0.0.1:8474/proxies/minioProxyN/toxics/latency -d "@templ
 ```
 
 
-At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications). Remember that for each application, it is necessary to add the node with the same ID. So, for example, if you want to add another application in addition to the three existing, its ID will be 4, and the associated ID of the node will be 4.
+At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications), and, when you had setup the database, after the import of the dump file, you must a add a column named 'feedback_N 'to the 'events' table in the database, through the database GUI.
+Remember that for each application, it is necessary to add the node with the same ID. So, for example, if you want to add another application in addition to the three existing, its ID will be 4, and the associated ID of the node will be 4.
+
 
 The [offline training step](#offline-trainingoptional) must be executed.
 
