@@ -305,7 +305,8 @@ curl -X POST http://127.0.0.1:8474/proxies/minioProxyN/toxics/latency -d "@templ
 ```
 
 
-At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications), and, when you had setup the database, after the import of the dump file, you must a add a column named 'feedback_N 'to the 'events' table in the database, through the database GUI.
+At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications), and, when you had setup the database, after the import of the dump file, you must add a column named 'feedback_N' of type dobule to the 'events' table in the database, through the database GUI.
+Follow the example of the other feedbacks column of the table.
 Remember that for each application, it is necessary to add the node with the same ID. So, for example, if you want to add another application in addition to the three existing, its ID will be 4, and the associated ID of the node will be 4.
 
 
