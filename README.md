@@ -173,8 +173,16 @@ actions.node_list.append(N4)
 
 # add node 5
 db.add_node(5)
+N5 = actions.Node(5, 1, db.get_availability(5), db.get_latency(1, 5))
+actions.node_list.append(N5)
 .....
    ``` 
+   
+In case you want to initialize randomly the latencies among the nodes, add to the end of the file this line:
+``` 
+db.initialize_random()
+``` 
+
 4. save the file and execute it by typing ``` python file.py ``` in the terminal window;
  
 5. go to tables 'latency' and 'availability' from the GUI of the database application, and fill in all the fields with value '-1' with the desired parameters.
