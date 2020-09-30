@@ -49,7 +49,7 @@ The following Figure shows the architecture of the system, after performing all 
 ![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture.png)
 
 Modifying the values from the GUI of the database, it is possible to change at run-time the properties of the environment, namely the availability (metadata associated to each node) and the latency (in ms)among the nodes.
-Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, the offline learning must be executed, in order to setup properly the information about the initial impacts.
+Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, it is necessary to start the procedure from these section, and the offline learning must be executed, in order to setup properly the information about the initial impacts.
 
 
 ## Prerequisites:
@@ -112,22 +112,19 @@ After this initialization, the [Spark History Servers][history server] of the th
 - 'http://127.0.0.1:18082' (Spark2);
 - 'http://127.0.0.1:18083' (Spark3);
 
-## Offline training(optional)
+## Offline training
 The training step is used to produce the set of initial impact vectors, which represent the effects of the actions on the various QoS metrics.
- Since the the applications contains already the output of the training (IMXY/ICXY/ICRY.txt text files), it is not necessary to re-execute the training program if the initial configuration is maintained. However, if big changes to the properties are executed (during the db setup step), it is necessary to re-execute the training step. Moreover, since the computation performances may vary from a machine to another, is preferable to perform anyway this step.
+ Since the the applications contains already the output of the training (IMXY/ICXY/ICRY.txt text files), it is not necessary to re-execute the training program if the initial configuration is maintained. However, if big changes to the properties are executed (during the db setup step), or new nodes/applications are added, it is necessary to re-execute the training step. Moreover, since the computation performances may vary from a machine to another, is preferable to perform anyway this step.
  
- - Execute the start_bash_win.cmd or start_bash.sh program in order to 
- 
- 
- within the three containers;
+ - Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
  - (optional)  type ``` nano training.py ``` and modify the constant N, to configure the number of iterations of the training step, namely the number of times each action is tried. The result stored in the impact vectors will be the average of the N steps. 
  - In each of the terminals, type ``` python training.py ``` and wait until its completion. (Note that the required time can be quite long, depending on the number of nodes in the network and to the N value);
  - in each of the terminals, type ``` cp -a /usr/spark-2.4.1/bin/output_training/. ./ ```, in order to copy the results of the training to the correct directory (/usr/spark-2.4.1/bin);
  
 Since the offline training can require a lot of time, you can store its output and just include it for the successive executions of the system. You can do it by coping in a local directory the folder containing the results:  ``` docker cp spark1:/usr/spark-2.4.1/bin/output_training ./ ``` 
-then, copy all the .txt files into the corresponding spark directory, for example spark1 for the first instance. Overwrite all the eventually files with the same name with the newer. Apply this procedure for all the spark instances. Remember that the results of the training will be different from an application to another, because the applications are virtually placed in different nodes. Consequenly, you have to store the output files into the right directory corresponding to the application
- 
- 
+then, copy all the .txt files into the corresponding spark directory, for example spark1 for the first instance. Overwrite all the eventually files with the same name with the newer. Apply this procedure for all the spark instances. Remember that the results of the training will be different from an application to another, because the applications are virtually placed in different nodes. Consequenly, you have to store the output files into the right directory corresponding to the application.
+If you decide to store the vectors for reuse them, it is necessary to rebuilt the containers belonging to the folder 'program', in order to include them within the containers. 
+
  - close the terminals.
  
 ## Usage
@@ -153,7 +150,7 @@ First of all, the nodes are identified by an ID, which for convention is an incr
 
 
 1. follow all the [Installation](#installation-) steps.
-2. type in a terminal window, in order to login within the first application: ``` docker exec -it spark1 bash ``` and create and write the contenent of a new python file (e.g. file.py) ``` nano file.py ``` .
+2. Type in a terminal window, in order to login within the first application: ``` docker exec -it spark1 bash ``` and create and write the contenent of a new python file (e.g. file.py) ``` nano file.py ``` .
 
 The function db.add_node(ID), adds a node with id ID in the system. In particular, it adds to the 'latency' table all the possible combinations among the nodes in the network (present in the node_list), and the rows related to the availavilities values in the 'avaialability' table. 
 
@@ -173,7 +170,6 @@ actions.node_list.append(N4)
 db.add_node(5)
 N5 = actions.Node(5, 1, db.get_availability(5), db.get_latency(1, 5))
 actions.node_list.append(N5)
-#db.initialize_random(node_list)
 
    ```  
 In case you want to initialize randomly the latencies among the nodes, add to the end of the file this line:
@@ -195,13 +191,12 @@ The following Figures show an example of configuration:
 
 In this configuration, the added node with ID 4 has a mean latency of 2000 ms to node 1, of 1000 ms to node 2, of 500 ms to node 3 and finally of 200 ms to node 5.  Moreover, the node has a mean availability of 80 % .
 
-4. Within each container (Execute the start_bash_win.cmd or start_bash.sh program), open the file 'actions.py' by typing ``` nano actions.py' ``` and add the new nodes to the configuration, by adding these lines. modify the ID value with the id of the current application (1, 2, 3), and add them to the list of nodes:
+4. Within each container (Execute the start_bash_win.cmd or start_bash.sh program), open the file 'actions.py' by typing ``` nano actions.py' ``` and add the new nodes to the configuration, by adding these lines.
  ``` 
  # list of the available nodes in the net
  ..
- 
- N4 = Node(4, 1, db.get_availability(4), db.get_latency(ID, 4))
- N5 = Node(5, 1, db.get_availability(5), db.get_latency(ID, 5))
+ N4 = Node(4, 1, db.get_availability(4), db.get_latency(c_id, 4))
+ N5 = Node(5, 1, db.get_availability(5), db.get_latency(c_id, 5))
 
  # add the nodes to the existing node list:
  node_list = [...., N4, N5] 
@@ -249,13 +244,6 @@ Follow these instructions (in general, you can use the previous 3 applications a
 ```
  # controller id
  c_id = N 
- 
- .....
- 
- # list of available nodes in the net.
-N1 = Node(1, 1, db.get_availability(1), db.get_latency(N, 1))
-N2 = Node(2, 1, db.get_availability(2), db.get_latency(N, 2))
-N3 = Node(3, 1, db.get_availability(3), db.get_latency(N, 3))
 
  ```
  - in 'add.jon' :
