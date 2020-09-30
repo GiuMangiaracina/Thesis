@@ -303,6 +303,11 @@ def feedback(t_viol):
 ```  
 curl -X POST http://127.0.0.1:8474/proxies/minioProxyN/toxics/latency -d "@template.json"
 ```
+modify the file which starts the applications (start.sh or start_win.cmd), in order to add even the new created one. For example, for start.sh, add at the end:
+```
+xterm -e docker exec -it sparkN python init.py &
+```
+Do the same thing for the files start_bash.sh (or start_win_bash.cmd), adding the line corresponding to the new application.
 
 
 At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications), and, when you had setup the database, after the import of the dump file, you must add a column named 'feedback_N' of type dobule to the 'events' table in the database, through the database GUI.
