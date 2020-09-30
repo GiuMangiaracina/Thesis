@@ -322,6 +322,70 @@ def update_latency(node_id, node_target, value):
     connection.commit()
     cur.close()
 
+def add_node(node_id):
+    # add missing latencies between nodes -> fill in manually all the -1 values manually from the db GUI!
+    global connection
+    cur = connection.cursor()
+
+    sql2 = 'SELECT COUNT(*) FROM latency WHERE node_ID = %s'
+    x = (node_id)
+    cur.execute(sql2, x)
+    m = cur.fetchone()[0]
+
+    if m == 0:
+
+        sql = 'insert into latency (node_ID,node,value) values (%s,%s,%s)'
+        s = (node_id, node_id, 0)
+        cur.execute(sql, s)
+        for a in actions.node_list:
+            sql = 'insert into latency (node_ID,node,value) values (%s,%s,%s)'
+            s = (node_id, a.id, -1)
+            cur.execute(sql, s)
+            sql1 = 'insert into latency (node_ID,node,value) values (%s,%s,%s)'
+            s = (a.id, node_id, -1)
+            cur.execute(sql1, s)
+        connection.commit()
+    print("Node with ID " + str(
+        node_id) + " added. Please add the node to the node list, and fill in the -1 values in the database.")
+
+    # add availability node-> -1 to fill in
+
+    sql2 = 'insert into availability (node, value) values (%s,%s)'
+    p = (node_id, -1)
+    cur.execute(sql2, p)
+    connection.commit()
+    cur.close()
+
+def fill_in_gpw():
+    global connection
+    cur = connection.cursor()
+
+
+    for a in actions.total_action_list:
+        sql = 'SELECT EXISTS (SELECT * from global_counter where id=%s);'
+        cur.execute(sql,a.id)
+        code = cur.fetchone()[0]
+        print(code)
+        if code == 0:
+            sql1 = 'insert into global_counter (action,id,value) values (%s,%s,%s)'
+            p = (a.label, a.id, 0)
+            cur.execute(sql1, p)
+            connection.commit()
+    cur.close()
+
+
+
+def check_gpw_table():
+    global connection
+    cur = connection.cursor()
+
+    sql = 'SELECT EXISTS (SELECT 1 FROM global_counter);'
+
+    cur.execute(sql)
+
+    code = cur.fetchone()[0]
+    cur.close()
+    return code
 
 def truncate(number, digits) -> float:
     stepper = 10.0 ** digits

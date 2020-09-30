@@ -360,11 +360,18 @@ def add_node(node_id):
 def fill_in_gpw():
     global connection
     cur = connection.cursor()
+
+
     for a in actions.total_action_list:
-        sql = 'insert into global_counter (action,id,value) values (%s,%s,%s)'
-        p = (a.label, a.id, 0)
-        cur.execute(sql, p)
-        connection.commit()
+        sql = 'SELECT EXISTS (SELECT * from global_counter where id=%s);'
+        cur.execute(sql,a.id)
+        code = cur.fetchone()[0]
+        print(code)
+        if code == 0:
+            sql1 = 'insert into global_counter (action,id,value) values (%s,%s,%s)'
+            p = (a.label, a.id, 0)
+            cur.execute(sql1, p)
+            connection.commit()
     cur.close()
 
 
