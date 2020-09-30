@@ -79,25 +79,30 @@ def feedback(t_viol):
     sql = "select time_stamp,id from events where active = 1 and controller_id != %s and action != 0 and data_source= %s "
     cur.execute(sql, (actions.c_id, actions.data_set_id))
     rows = cur.fetchall()
-    for row in rows:
-        ts = row[0]
-        event_id = row[1]
+
+    if cur.rowcount == 0:
+        print("No open events.")
+
+    else:
+        for row in rows:
+            ts = row[0]
+            event_id = row[1]
         # compute negative feedback
-        p = 1 - ((t_viol - ts) / T)
+            p = 1 - ((t_viol - ts) / T)
 
         # write negative feedback into event entry
 
-        sql2 = "update events set sum_feedback = sum_feedback + %s  where id = % s and  feedback_3 = 0"
-        q = (p, event_id)
-        cur.execute(sql2, q)
-        connection.commit()
-        sql1 = "update events set feedback_3 = %s where id = % s and feedback_3 = 0"
-        r = (p, event_id)
-        cur.execute(sql1, r)
-        connection.commit()
+            sql2 = "update events set sum_feedback = sum_feedback + %s  where id = % s and  feedback_3 = 0"
+            q = (p, event_id)
+            cur.execute(sql2, q)
+            connection.commit()
+            sql1 = "update events set feedback_3 = %s where id = % s and feedback_3 = 0"
+            r = (p, event_id)
+            cur.execute(sql1, r)
+            connection.commit()
 
-        print("FEEDBACK LEFT: " + str(p))
-        print("\n")
+            print("FEEDBACK LEFT: " + str(p))
+            print("\n")
     cur.close()
 
 
