@@ -49,8 +49,7 @@ The following Figure shows the architecture of the system, after performing all 
 ![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture.png)
 
 Modifying the values from the GUI of the database, it is possible to change at run-time the properties of the environment, namely the availability (metadata associated to each node) and the latency (in ms)among the nodes.
-Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, it is necessary to start the procedure from these section, and the offline learning must be executed, in order to setup properly the information about the initial impacts.
-
+Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, it is necessary to start the procedure from these sectionS, and the offline learning step must be executed, in order to setup properly the information about the initial impacts.
 
 ## Prerequisites:
 - a working [Docker][docker] installation (for 64-bit systems);
@@ -146,38 +145,33 @@ to stop all the containers, once located from the terminal respectively in the '
 
 ## Add other nodes to the network (without running applications)
 To add additional empty nodes to the network, i.e., without running applications, follow these instructions.
-First of all, the nodes are identified by an ID, which for convention is an increasing number (1,2,3,..). In order to add nodes, you have to start from 4 onwards:
+First of all, the nodes are identified by an ID, which for convention is an increasing number (1,2,3,..). In order to add nodes, you have to start from 4 onwards.
 
-
-1. follow all the [Installation](#installation-) steps.
-2. Type in a terminal window, in order to login within the first application: ``` docker exec -it spark1 bash ``` and create and write the contenent of a new python file (e.g. file.py) ``` nano file.py ``` .
+1. follow the [database setup step](#database-setup-mysql-server--phpmyadmin-)
+2. go to 'spark1' folder and open the file 'add_nodes.py'. Go to the bottom of the file, and add new nodes . Each node needs to be created, added to the list of existing (1,2,3) nodes and added to the system.
 
 The function db.add_node(ID), adds a node with id ID in the system. In particular, it adds to the 'latency' table all the possible combinations among the nodes in the network (present in the node_list), and the rows related to the availavilities values in the 'avaialability' table. 
 
-For example, to add two nodes with ID 4 and 5 to the network, write in the file just created:
+For example, to add two nodes with ID 4 and 5 to the network, write below the node_list :
+``` 
+# add new nodes
+
+N4 = Node(4, 1, 0, 0)
+node_list.append(N4)
+add_node(4)
+
+N5 = Node(5, 1, 0, 0)
+node_list.append(N5)
+add_node(5)
 
 ``` 
-import db
-import actions
-
-#new nodes:
-
-# add node 4
-db.add_node(4)
-# add node to the list of nodes
-N4 = actions.Node(4, 1, db.get_availability(4), db.get_latency(1, 4))
-actions.node_list.append(N4)
-db.add_node(5)
-N5 = actions.Node(5, 1, db.get_availability(5), db.get_latency(1, 5))
-actions.node_list.append(N5)
-
-   ```  
 In case you want to initialize randomly the latencies among the nodes, add to the end of the file this line:
 ``` 
 db.initialize_random(node_list)
 ``` 
-Save the file and execute it by typing ``` python file.py ```.
- 
+
+Execute the program by typing in a terminal this command: ``` docker exec -it spark1 python add_nodes.py ``` .
+
 3. Go to tables 'latency' and 'availability' from the GUI of the database application, and fill in all the fields with value '-1' with the desired parameters.
 Eventually, modify the other values in the tables.
 In the 'latency' table, each row contains the mean latency in ms between each pair of nodes, identified by their unique ID (node_ID -> node).
@@ -191,7 +185,7 @@ The following Figures show an example of configuration:
 
 In this configuration, the added node with ID 4 has a mean latency of 2000 ms to node 1, of 1000 ms to node 2, of 500 ms to node 3 and finally of 200 ms to node 5.  Moreover, the node has a mean availability of 80 % .
 
-4. Within each container (Execute the start_bash_win.cmd or start_bash.sh program), open the file 'actions.py' by typing ``` nano actions.py' ``` and add the new nodes to the configuration, by adding these lines.
+4. Within each spark folder, open the file 'actions.py' and add the new nodes to the configuration, by adding these lines.
  ``` 
  # list of the available nodes in the net
  ..
@@ -203,8 +197,9 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
  ``` 
 Note that the id of the applications corresponds to the value of the 'c_id' variable set in the 'actions.py' file.
 
-5. Within each container, execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional). Eventually store the results as explained in the section, for the next executions.
+5. Follow all the [Installation](#installation-) steps.
 
+6. Within each container, execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional). Eventually store the results as explained in the section, for the next executions. If you have already the vectors, include them into the folders as exlplained in the section.
 
 At this point you can start the program, following the [usage](#usage) section.
 
@@ -219,12 +214,10 @@ For convention, the associated applications have the same ID.
 So, in order to add new applications and nodes, you have to start with an associated ID from 4 onwards. 
 Follow these instructions (in general, you can use the previous 3 applications as guide, substituting the configuration with the right ID in the various files), for each of the new applications. When you read N, substitute with the correct ID (4, 5 ,...) value:
 
--	duplicate a spark directory in the 'program' folder. Since each application have different requirements (you can read them above), you can duplicate the folder with the metrics of interest for the new application. Then you can modify the min/max thresholds changing the parameters in the 'metrics.py' file.
-
--	rename the folder with 'sparkN';
+1.	duplicate a spark directory in the 'program' folder and rename it with 'sparkN'.. Since each application have different requirements (you can read them above), you can duplicate the folder with the metrics of interest for the new application. Then you can modify the min/max thresholds changing the parameters in the 'metrics.py' file.
 
 
--	open the 'docker-compose.yml' file in the 'program' folder, and add at the bottom the following lines for each application, necessary to build the new container:
+2. Open the 'docker-compose.yml' file in the 'program' folder, and add at the bottom the following lines for each application, necessary to build the new container:
  ```
  sparkN:
         build : ./sparkN/
@@ -239,7 +232,7 @@ Follow these instructions (in general, you can use the previous 3 applications a
 ```
 
 
--	inside the folder 'sparkN', modify these values inside the various files, substituing N with the ID of the application:
+3. inside the folder 'sparkN', modify these values inside the various files, substituing N with the ID of the application:
 -	In 'actions.py': 
 ```
  # controller id
