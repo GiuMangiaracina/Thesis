@@ -367,7 +367,7 @@ def __main__():
         c = actions.generate_actions(actions.node_list)
         if c == 0:
             print(
-                colored("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE 'training.py' program.",
+                colored("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE TRAINING PROGRAM ('training.py').",
                         'red'))
             sys.exit()
 

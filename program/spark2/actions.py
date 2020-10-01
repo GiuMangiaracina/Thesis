@@ -74,9 +74,9 @@ class CR_Action(Action):
 
 
 # list of available nodes in the net.
-N1 = Node(1, 1, db.get_availability(1), db.get_latency(2, 1))
-N2 = Node(2, 1, db.get_availability(2), db.get_latency(2, 2))
-N3 = Node(3, 1, db.get_availability(3), db.get_latency(2, 3))
+N1 = Node(1, 1, db.get_availability(1), db.get_latency(c_id, 1))
+N2 = Node(2, 1, db.get_availability(2), db.get_latency(c_id, 2))
+N3 = Node(3, 1, db.get_availability(3), db.get_latency(c_id, 3))
 state = Node(0, 0, 0, 0)
 
 # id of the data reference copy for the application
@@ -112,7 +112,7 @@ def update_state(node):
     state.id = node.id
     state.disk = node.id
     state.availability = db.get_availability(node.id)
-    state.mean_delay = db.get_latency(2, node.id)
+    state.mean_delay = db.get_latency(c_id, node.id)
 
 
 # method which returns the actual state

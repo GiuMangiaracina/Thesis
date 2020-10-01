@@ -81,6 +81,7 @@ def training():
     p = 0
     r = 0
 
+    print("TRAINING STARTED.\n")
     for a in action_list:
         vector = []
         print(a.label + " :\n")

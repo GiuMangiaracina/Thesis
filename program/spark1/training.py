@@ -73,7 +73,7 @@ def computation(n):
 
 def training():
     # N = number of iterations of the process
-    N = 2
+    N = 5
     generate_actions()
 
     z = 0
@@ -81,6 +81,7 @@ def training():
     p = 0
     r = 0
 
+    print("TRAINING STARTED.\n")
     for a in action_list:
         vector = []
         print(a.label + " :\n")
