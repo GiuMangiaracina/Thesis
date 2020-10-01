@@ -49,7 +49,7 @@ The following Figure shows the architecture of the system, after performing all 
 ![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture.png)
 
 Modifying the values from the GUI of the database, it is possible to change at run-time the properties of the environment, namely the availability (metadata associated to each node) and the latency (in ms)among the nodes.
-Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, it is necessary to start the procedure from these sectionS, and the offline learning step must be executed, in order to setup properly the information about the initial impacts.
+Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, it is necessary to start the procedure from these sections, and the offline learning step must be executed, in order to setup properly the information about the initial impacts.
 
 ## Prerequisites:
 - a working [Docker][docker] installation (for 64-bit systems);
@@ -78,8 +78,8 @@ Execute all the following instructions, in order.
  - password = helloworld;
  - database = db;
  
-6. import the database data and schemas from the provided dump file, clicking on Import-> File Upload -> Browse, and load the file 'dump_db.sql', located in db/data/ . Then click on 'Execute':
-7. eventually apply any edits to the initial configuration, editing the 'latency' and 'availability' tables of the database from the GUI.
+6. import the database data and schemas from the provided dump file, clicking on Import-> File Upload -> Browse, and load the file 'db.sql', located in db/data/ . Then click on 'Execute':
+7. eventually apply any edits to the initial configuration, editing the 'latency' and 'availability' table values of the database from the GUI.
 ### Program setup
 In the 'program' directory:
 1. build the containers, typing: ```docker-compose build```;
@@ -95,36 +95,35 @@ To verify in which containers you are, just type ``` ls ``` and verify the prese
 1. Browse to 'http://127.0.0.1:9000', and login into minIO server instance using the following credentials: 
 - username = minio ;
 - password = minio123 .
-2. load the data set: click on the '+' button, below; create a bucket named 'miniobucket'; load the extracted file 'file1.json' into the bucket just created.
+2. Load the data set: click on the '+' button, below; create a bucket named 'miniobucket'; load the extracted file 'file1.json' into the bucket just created.
 
 ### Initialization
 In the 'program' directory:
 
-- for Windows users: execute 'start_win.cmd'and wait until its completion;
+1. - for Windows users: execute 'start_win.cmd'and wait until its completion;
 - for Linux users: 
-1. execute the file 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
-2. click on the file 'start.sh'and wait until its completion.
+a. execute the file 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
+b. click on the file 'start.sh'and wait until its completion.
  This command initializes the proxies and the Spark History Servers.
 
-After this initialization, the [Spark History Servers][history server] of the three applications, which show the properties of the computations, are accessible at the following addresses:
+After this initialization, the [Spark History Servers][history server] of the three applications, which show the details of the computations, are accessible at the following addresses:
 - 'http://127.0.0.1:18081' (Spark1);
 - 'http://127.0.0.1:18082' (Spark2);
 - 'http://127.0.0.1:18083' (Spark3);
 
 ## Offline training
 The training step is used to produce the set of initial impact vectors, which represent the effects of the actions on the various QoS metrics.
- Since the the applications contains already the output of the training (IMXY/ICXY/ICRY.txt text files), it is not necessary to re-execute the training program if the initial configuration is maintained. However, if big changes to the properties are executed (during the db setup step), or new nodes/applications are added, it is necessary to re-execute the training step. Moreover, since the computation performances may vary from a machine to another, is preferable to perform anyway this step.
+ Since the applications contain already the output of the training (IMXY/ICXY/ICRY.txt text files), it is not necessary to re-execute the training program if the initial configuration is maintained (3 nodes and 3 applications). However, if big changes to the properties are executed (during the db setup step), or new nodes/applications are added, it is necessary to re-execute the training step. Moreover, since the computation performances may vary from a machine to another, is preferable to perform anyway this step.
  
- - Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
- - (optional)  type ``` nano training.py ``` and modify the constant N, to configure the number of iterations of the training step, namely the number of times each action is tried. The result stored in the impact vectors will be the average of the N steps. 
- - In each of the terminals, type ``` python training.py ``` and wait until its completion. (Note that the required time can be quite long, depending on the number of nodes in the network and to the N value);
- - in each of the terminals, type ``` cp -a /usr/spark-2.4.1/bin/output_training/. ./ ```, in order to copy the results of the training to the correct directory (/usr/spark-2.4.1/bin);
+ 1. Execute the start_bash_win.cmd or start_bash.sh program in order to login within the three containers;
+ 2. (Optional)  type ``` nano training.py ``` and modify the constant N, to configure the number of iterations of the training step, namely the number of times each action is tried. The result stored in the impact vectors will be the average of the N steps. 
+ 3. In each of the terminals, type ``` python training.py ``` and wait until its completion. (Note that the required time can be quite long, depending on the number of nodes in the network and to the N value);
+ 4. in each of the terminals, type ``` cp -a /usr/spark-2.4.1/bin/output_training/. ./ ```, in order to copy the results of the training to the correct directory (/usr/spark-2.4.1/bin) . close the terminals.
  
 Since the offline training can require a lot of time, you can store its output and just include it for the successive executions of the system. You can do it by coping in a local directory the folder containing the results:  ``` docker cp spark1:/usr/spark-2.4.1/bin/output_training ./ ``` 
 then, copy all the .txt files into the corresponding spark directory, for example spark1 for the first instance. Overwrite all the eventually files with the same name with the newer. Apply this procedure for all the spark instances. Remember that the results of the training will be different from an application to another, because the applications are virtually placed in different nodes. Consequenly, you have to store the output files into the right directory corresponding to the application.
-If you decide to store the vectors for reuse them, it is necessary to rebuilt the containers belonging to the folder 'program', in order to include them within the containers. 
+If you decide to store the vectors for reuse them, it is necessary to rebuilt the containers belonging to the folder 'program' in the next execution, in order to include the files within the containers. 
 
- - close the terminals.
  
 ## Usage
 In the 'program' directory, re-execute the following program:
@@ -133,7 +132,7 @@ execute 'start_win.cmd';
 - for Linux users, once logged as root user (sudo su):
 click on 'start.sh' .
 
-This command starts the system, and executes in parallel the computations, showing them on three different terminal windows.
+This command starts the system, and executes in parallel the computations in an infinite loop, showing them on three different terminal windows.
 
 
 During the execution, the events happened in the environment, namely the actions performed by the single decision systems and associated information, are posted and stored in the form of entry in the table 'events', visible through the phpMyAdmin application.
@@ -141,16 +140,16 @@ During the execution, the events happened in the environment, namely the actions
 It is assumed that applications reach convergence when no new corrective actions are recorded, i.e. when application executions meet agreed requirements. At this point, it is possible to stop the computation, simply pressing ```ctrl+c``` in each of the terminal windows. 
 
 
-to stop all the containers, once located from the terminal respectively in the 'program' and 'db' folders, type ``` docker-compose down``` .
+To stop all the containers, once located from the terminal respectively in the 'program' and 'db' folders, type ``` docker-compose down``` .
 
 ## Add other nodes to the network (without running applications)
 To add additional empty nodes to the network, i.e., without running applications, follow these instructions.
 First of all, the nodes are identified by an ID, which for convention is an increasing number (1,2,3,..). In order to add nodes, you have to start from 4 onwards.
 
-1. follow the [database setup step](#database-setup-mysql-server--phpmyadmin-)
-2. go to 'spark1' folder and open the file 'add_nodes.py'. Go to the bottom of the file, and add new nodes . Each node needs to be created, added to the list of existing (1,2,3) nodes and added to the system.
+1. Follow the [database setup step](#database-setup-mysql-server--phpmyadmin-).
+2. Go to 'spark1' folder and open the file 'add_nodes.py'. Go to the bottom of the file, and add new nodes. Each node needs to be created, added to the list of existing (1,2,3) nodes, and added to the system through the function add_node(ID).
 
-The function db.add_node(ID), adds a node with id ID in the system. In particular, it adds to the 'latency' table all the possible combinations among the nodes in the network (present in the node_list), and the rows related to the availavilities values in the 'avaialability' table. 
+The function add_node(ID), adds a node with id ID in the system. In particular, it adds to the 'latency' table all the possible combinations among the nodes in the network (present in the node_list), and the rows related to the availavilities values in the 'avaialability' table. 
 
 For example, to add two nodes with ID 4 and 5 to the network, write below the node_list :
 ``` 
@@ -197,7 +196,7 @@ In this configuration, the added node with ID 4 has a mean latency of 2000 ms to
  ``` 
 Note that the id of the applications corresponds to the value of the 'c_id' variable set in the 'actions.py' file.
 
-5. Follow all the [Installation](#installation-) steps.
+5. Follow all the [Installation](#installation-) steps, excluding the setup of the database, that is already running.
 
 6. Within each container, execute the training program, following the steps explained in [offline Training section](#offline-trainingoptional). Eventually store the results as explained in the section, for the next executions. If you have already the vectors, include them into the folders as exlplained in the section.
 
@@ -214,10 +213,10 @@ For convention, the associated applications have the same ID.
 So, in order to add new applications and nodes, you have to start with an associated ID from 4 onwards. 
 Follow these instructions (in general, you can use the previous 3 applications as guide, substituting the configuration with the right ID in the various files), for each of the new applications. When you read N, substitute with the correct ID (4, 5 ,...) value:
 
-1.	duplicate a spark directory in the 'program' folder and rename it with 'sparkN'.. Since each application have different requirements (you can read them above), you can duplicate the folder with the metrics of interest for the new application. Then you can modify the min/max thresholds changing the parameters in the 'metrics.py' file.
+1.	duplicate a spark directory in the 'program' folder and rename it with 'sparkN'. Since each application have different requirements (you can read them above), you can duplicate the folder with the metrics of interest for the new application. Then you can modify the min/max thresholds changing the parameters in the 'metrics.py' file.
 
 
-2. Open the 'docker-compose.yml' file in the 'program' folder, and add at the bottom the following lines for each application, necessary to build the new container:
+2. Open the 'docker-compose.yml' file in the 'program' folder, and add at the bottom the following lines for each new application, necessary to build the new container:
  ```
  sparkN:
         build : ./sparkN/
@@ -282,7 +281,7 @@ xterm -e docker exec -it sparkN python init.py &
 Do the same thing for the files start_bash.sh (or start_win_bash.cmd), adding the line corresponding to the new application.
 
 
-At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications), and, when you had setup the database, after the import of the dump file, you must add a column named 'feedback_N' of type dobule to the 'events' table in the database, through the database GUI.
+At this point, you can follow the steps of the [add nodes section](#add-other-nodes-to-the-network-without-running-applications), and, when you had setup the database, after the import of the dump file, you must add a column named 'feedback_N' of type dobule to the 'events' table in the database for each new application, through the database GUI.
 Follow the example of the other feedbacks column of the table.
 Remember that for each application, it is necessary to add the node with the same ID. So, for example, if you want to add another application in addition to the three existing, its ID will be 4, and the associated ID of the node will be 4.
 
