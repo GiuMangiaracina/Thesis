@@ -46,7 +46,7 @@ In the following are illustrated the steps to start the three applications, acco
 
 
 The following Figure shows the architecture of the system, after performing all the installation steps:
-![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture.png)
+![](https://github.com/GiuMangiaracina/Thesis/blob/master/architecture%20.png)
 
 Modifying the values from the GUI of the database, it is possible to change at run-time the properties of the environment, namely the availability (metadata associated to each node) and the latency (in ms)among the nodes.
 Moreover, it is possible to change the initial configuration, or extend the network, adding both additional nodes and applications, following the instructions in the specific sections. In the latter cases, it is necessary to start the procedure from these sections, and the offline learning step must be executed, in order to setup properly the information about the initial impacts.
