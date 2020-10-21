@@ -55,7 +55,7 @@ Moreover, it is possible to change the initial configuration, or extend the netw
 - a working [Docker][docker] installation (for 64-bit systems);
 - docker-compose installed  (to install it on Linux systems, type  ```sudo apt install docker-compose  ``` in the terminal.);
 - for Linux users, xterm installed (to install it, type 'sudo apt-get install xterm' in the terminal.).
-- for Windows users which use Docker Toolbox (legacy solution for Windows versions different from Windows 10 Professional and Enterprise 64-bit):
+- if docker-machine is not installed in the same machine where it is installed docker CLI, for example for Windows users who use Docker Toolbox (legacy solution for Windows versions different from Windows 10 Professional and Enterprise 64-bit):
  1. determine the IP of your Docker virtual machine by running: 'docker-machine ip' after starting docker;
  2. start Oracle VM VirtualBox; locate the Docker virtual machine (usually named 'default'); select settings-> Network->Adapter1 (NAT) -> Advanced -> Portforwarding, then add the following rules (substitute the 'guest Ip' field with your docker-machine ip):
  ![](https://github.com/GiuMangiaracina/Thesis/blob/master/ports.JPG)
@@ -69,7 +69,7 @@ Execute all the following instructions, in order.
 1. move into 'db' directory. For Linux users, login as root user typing : ```sudo su ``` at the terminal;
 2. build the images, typing: ```docker-compose build```;
 3. start the containers, typing: ```docker-compose up```;
-4. access to phpMyAdmin web app browsing to 'http://127.0.0.1/8080';
+4. access to phpMyAdmin web app browsing to 'http://127.0.0.1:8080';
 5. login into database using the following credentials: 
  
  - system = MySql;
@@ -78,8 +78,10 @@ Execute all the following instructions, in order.
  - password = helloworld;
  - database = db;
  
-6. import the database data and schemas from the provided dump file, clicking on Import-> File Upload -> Browse, and load the file 'db.sql', located in db/data/ . Then click on 'Execute':
-7. eventually apply any edits to the initial configuration, editing the 'latency' and 'availability' table values of the database from the GUI.
+6. import the database data and schemas from the provided dump file, clicking on Import-> File Upload -> Browse, and load the file 'db.sql', located in db/data/ . Then click on 'Execute'.
+7. If you want to apply any edits to the initial configuration, edit the 'latency' and 'availability' table values of the database from the GUI.
+   Otherwise skip this step.
+  
 ### Program setup
 In the 'program' directory:
 1. build the containers, typing: ```docker-compose build```;
