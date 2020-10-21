@@ -79,7 +79,7 @@ Execute all the following instructions, in order.
  - database = db;
  
 6. import the database data and schemas from the provided dump file, clicking on Import-> File Upload -> Browse, and load the file 'db.sql', located in db/data/ . Then click on 'Execute'.
-7. If you want to apply any edits to the initial configuration, edit the 'latency' and 'availability' table values of the database from the GUI.
+7. If you want to apply any edits to the initial configuration, edit the 'latency', 'availability', 'file_table' table values of the database from the GUI. The latter is used in order to set the initial position of the file, among the nodes.
    Otherwise skip this step.
   
 ### Program setup
@@ -252,16 +252,17 @@ Follow these instructions (in general, you can use the previous 3 applications a
 -	in 'app.sh': 
 ``` { time spark-submit --master local[2] --conf spark.hadoop.fs.s3a.endpoint=http://127.0.0.1:800N script.py 2>1 ;} 2>> time.log ```
 
-- in	'db.py' : set variable 'N' to the total number of applications.
+- in	'db.py' :
+1.set variable 'N' to the total number of applications.
 
-inside the feedback(t_viol) function: 
+2. inside the feedback(t_viol) function, in the lines below substitute N with the ID of the application: 
 ``` 
 def feedback(t_viol):
     ...
         sql2 = "update events set sum_feedback = sum_feedback + %s  where id = % s and feedback_N = 0"
         sql1 = "update events set feedback_N = %s where id = % s and feedback_N = 0"
     ...
-    
+   
 ```
 - in 'set.sh': 
 ``` curl -X POST http://127.0.0.1:8474/proxies/minioProxyN/toxics -d "@template.json" ```
