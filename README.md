@@ -68,7 +68,7 @@ Execute all the following instructions, in order.
 ### Database setup (mySQL server + phpMyAdmin )
 1. move into 'db' directory. For Linux users, login as root user typing : ```sudo su ``` at the terminal;
 2. build the images, typing: ```docker-compose build```;
-3. start the containers, typing: ```docker-compose up```;
+3. start the containers, typing: ```docker-compose up &```;
 4. access to phpMyAdmin web app browsing to 'http://127.0.0.1:8080';
 5. login into database using the following credentials: 
  
@@ -85,7 +85,7 @@ Execute all the following instructions, in order.
 ### Program setup
 In the 'program' directory:
 1. build the containers, typing: ```docker-compose build```;
-2. start the containers, typing ```docker-compose up```.
+2. start the containers, typing ```docker-compose up &```.
 This command will start the three applications, whose containers name are respectively : spark1, spark2 and spark3. Note that to each application is associated an ID (1,2,3) which corresponds both to the container name, and to the ID associated to the node where the application is considered running.
 
 At any time, to login within each of the containers, type in the terminal the following command : ```docker exec -it sparkN bash```, substituting the value of N with the target container name (1, 2, 3, ..). To login simultaneously into the three containers, execute the start_bash_win.cmd or start_bash.sh program.
@@ -103,15 +103,16 @@ To verify in which containers you are, just type ``` ls ``` and verify the prese
 In the 'program' directory:
 
 1. - for Windows users: execute 'start_win.cmd'and wait until its completion;
-- for Linux users: 
-a. execute the file 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
-b. click on the file 'start.sh'and wait until its completion.
+   - for Linux users: 
+       a. execute the file 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
+       b. click on the file 'start.sh'and wait until its completion. Note that, at the end, a warning message may be shown. However, this should not cause concern.
+    - for Mac users: execute 'start_mac.sh'and wait until its completion;
  This command initializes the proxies and the Spark History Servers.
 
 After this initialization, the [Spark History Servers][history server] of the three applications, which show the details of the computations, are accessible at the following addresses:
-- 'http://127.0.0.1:18081' (Spark1);
-- 'http://127.0.0.1:18082' (Spark2);
-- 'http://127.0.0.1:18083' (Spark3);
+- 'http://127.0.0.1:18081/' (Spark1);
+- 'http://127.0.0.1:18082/' (Spark2);
+- 'http://127.0.0.1:18083/' (Spark3);
 
 ## Offline training
 The training step is used to produce the set of initial impact vectors, which represent the effects of the actions on the various QoS metrics.
@@ -133,6 +134,8 @@ In the 'program' directory, re-execute the following program:
 execute 'start_win.cmd';
 - for Linux users, once logged as root user (sudo su):
 click on 'start.sh' .
+
+- for Mac users: execute 'start_mac.sh';
 
 This command starts the system, and executes in parallel the computations in an infinite loop, showing them on three different terminal windows.
 
