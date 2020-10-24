@@ -171,7 +171,7 @@ add_node(5)
 ``` 
 In case you want to initialize randomly the latencies among the nodes, add to the end of the file this line:
 ``` 
-db.initialize_random(node_list)
+initialize_random(node_list)
 ``` 
 
 Execute the program by typing in a terminal this command: ``` docker exec -it spark1 python add_nodes.py ``` .
