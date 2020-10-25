@@ -23,6 +23,17 @@ def update_latency(node_id, node_target, value):
     cur.close()
 
 
+
+# method used to update the availability of a given node
+def update_availability(node_id, value):
+    global connection
+    cur = connection.cursor()
+    sql = "update availability set value = %s where node=%s"
+    s = (value, node_id)
+    cur.execute(sql, s)
+    connection.commit()
+    cur.close()
+
 def add_node(node_id):
     # add missing latencies between nodes -> fill in manually all the -1 values manually from the db GUI!
     global connection, node_list
@@ -64,15 +75,22 @@ def initialize_random(node_list):
     global connection
     cur = connection.cursor()
 
+    # initialize random latencies among nodes
     for n in node_list:
         for m in node_list:
             if m.id != n.id:
                 r = random.randint(100, 2000)
                 update_latency(n.id, m.id, r)
                 update_latency(m.id, n.id, r)
+
+    # initialize random availability
+    for m in node_list:
+        r = random.randint(60, 99)
+        update_availability(m.id, r)
+
     connection.commit()
     cur.close()
-    print("table initialized")
+    print("Network initialized.")
 
 
 # define the nodes to add to the list
@@ -80,13 +98,36 @@ N1 = Node(1, 1, 0, 0)
 N2 = Node(2, 1, 0, 0)
 N3 = Node(3, 1, 0, 0)
 
+
 node_list = [N1, N2, N3]
 
 # add new nodes
+N4 = Node(4, 1, 0, 0)
+node_list.append(N4)
+add_node(4)
 
-#N4 = Node(4, 1, 0, 0)
-#node_list.append(N4)
-#add_node(4)
+N5 = Node(5, 1, 0, 0)
+node_list.append(N5)
+add_node(5)
 
+N6 = Node(6, 1, 0, 0)
+node_list.append(N6)
+add_node(6)
 
-# initialize_random(node_list)
+N7 = Node(7, 1, 0, 0)
+node_list.append(N7)
+add_node(7)
+
+N8 = Node(8, 1, 0, 0)
+node_list.append(N8)
+add_node(8)
+
+N9 = Node(9, 1, 0, 0)
+node_list.append(N9)
+add_node(9)
+
+N10 = Node(10, 1, 0, 0)
+node_list.append(N10)
+add_node(10)
+
+#initialize_random(node_list)

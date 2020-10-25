@@ -18,6 +18,8 @@ import sys
 w_1 = 1
 w_2 = 1
 
+n_init=0
+
 # variables indicating the status of metrics at run-time: 1 = satisfied, 0 = not satisfied
 response_time_status = 1
 latency_status = 1
@@ -85,6 +87,7 @@ def truncate(number, digits) -> float:
 # this method checks the status of each metric compared to the user requirements. n = the node in which the data resides
 def check(RT, ET, X, NL, n):
     available_actions = [actions.NA]
+    global n_init
     list = []
     rand = 0
 
@@ -143,19 +146,22 @@ def check(RT, ET, X, NL, n):
 
         # leave negative feedback
         tsViol = int(time.time())
+        abort = db.set_data(actions.data_set_id)
+        if abort != n_init:
+            return 0
 
         # the while below prevents cases in which there are two simultaneous actions on the same data set.
-        while db.check_computation():
-            print("another controller is moving the data_set: wait execution time.")
-            block = 1
+ #       while db.check_computation():
+  #          print("another controller is moving the data_set: wait execution time.")
+   #         block = 1
 
-        if block == 1:
-            block = 0
-            return 0
+    #    if block == 1:
+     #       block = 0
+      #      return 0
 
         # leave feedbacks
         db.feedback(tsViol)
-        block = 0
+       # block = 0
 
         # start the action selection process: first, it is created the list of the available actions
         actions.update_impacts()
@@ -256,9 +262,9 @@ def check(RT, ET, X, NL, n):
             # update position of data set
             db.update_data(actions.data_set_id, selected.destination.id)
             # lock the shared block variable for 10 seconds ("execution time" of the action )
-            db.lock_computation()
-            time.sleep(10)
-            db.unlock_computation()
+       #     db.lock_computation()
+        #    time.sleep(10)
+         #   db.unlock_computation()
 
         elif selected.type == "copy":
             # add new data set row
@@ -273,11 +279,11 @@ def check(RT, ET, X, NL, n):
         # start new computation
         if selected.id != 0:
             # retrieve data set position
-            n = db.set_data(actions.data_set_id)
+            pos = db.set_data(actions.data_set_id)
 
             availability_old_state = actions.get_state().availability
             # update state
-            actions.set_state(n)
+            actions.set_state(pos)
 
             RT2, ET2, X2, NL2 = computation_2(actions.state)
 
@@ -326,6 +332,8 @@ def computation(n):
 
 
 def computation_2(n):
+    global n_init
+    n_init = n.id
     m = int(round(np.random.normal(n.mean_delay, 7)))
     if m <= 0:
         m = 0
@@ -379,9 +387,10 @@ def __main__():
 
 # method used to lookup the file_table in order to set the position of data and map to node
 def setting():
-    n = db.set_data(actions.data_set_id)
+    global n_init
+    n_init = db.set_data(actions.data_set_id)
 
-    actions.set_state(n)
+    actions.set_state(n_init)
     print("reference copy id: " + str(actions.data_set_id))
     code = computation(actions.state)
 

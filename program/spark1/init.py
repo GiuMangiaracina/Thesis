@@ -15,8 +15,9 @@ from termcolor import colored
 import shlex
 import sys
 
-block = 0
+n_init = 0
 
+block = 0
 # initial weights
 w_1 = 1
 w_2 = 1
@@ -86,6 +87,7 @@ def truncate(number, digits) -> float:
 # this method checks the status of each metric compared to the user requirements. n = the node in which the data resides.
 def check(RT, ET, X, NL, n):
     available_actions = [actions.NA]
+    global n_init
     list = []
     rand = 0
 
@@ -143,18 +145,10 @@ def check(RT, ET, X, NL, n):
 
         # leave negative feedback
         tsViol = int(time.time())
-
-        # the while below prevents cases in which there are two
-        # simultaneous actions on the same data set.
-        while db.check_computation():
-            print("another controller is moving the data_set: wait.")
-            block = 1
-
-        if block == 1:
-            block = 0
+        abort = db.set_data(actions.data_set_id)
+        if abort != n_init:
             return 0
 
-        block = 0
         db.feedback(tsViol)
 
         # start action selection process: create available action list
@@ -259,9 +253,9 @@ def check(RT, ET, X, NL, n):
             # update position of data set
             db.update_data(actions.data_set_id, selected.destination.id)
             # lock the shared block variable for 10 seconds ("execution time" of the action )
-            db.lock_computation()
-            time.sleep(10)
-            db.unlock_computation()
+      #      db.lock_computation()
+       #     time.sleep(10)
+        #    db.unlock_computation()
 
         elif selected.type == "copy":
             # add new data set row
@@ -274,13 +268,13 @@ def check(RT, ET, X, NL, n):
             actions.update_data_set(selected.id_data_set)
 
         # retrieve data set position
-        n = db.set_data(actions.data_set_id)
+        pos = db.set_data(actions.data_set_id)
 
         # start new computation
         if selected.id != 0:
             availability_old_state = actions.get_state().availability
             # update state
-            actions.set_state(n)
+            actions.set_state(pos)
 
             RT2, ET2, X2, NL2 = computation_2(actions.state)
 
@@ -333,6 +327,9 @@ def computation(n):
 
 
 def computation_2(n):
+    global n_init
+    n_init = n.id
+
     m = int(round(np.random.normal(n.mean_delay, 7)))
     if m <= 0:
         m = 0
@@ -367,8 +364,9 @@ def __main__():
         c = actions.generate_actions(actions.node_list)
         if c == 0:
             print(
-                colored("CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE TRAINING PROGRAM ('training.py').",
-                        'red'))
+                colored(
+                    "CAUTION: SOME OF THE VECTORS OF IMPACTS ARE MISSING. PLEASE LAUNCH THE TRAINING PROGRAM ('training.py').",
+                    'red'))
             sys.exit()
 
         # fill initial gpw table
@@ -391,9 +389,10 @@ def __main__():
 
 # method used to lookup the file_table in order to set the position of data and map to node
 def setting():
-    n = db.set_data(actions.data_set_id)
+    global n_init
+    n_init = db.set_data(actions.data_set_id)
 
-    actions.set_state(n)
+    actions.set_state(n_init)
 
     print("reference copy id: " + str(actions.data_set_id))
     code = computation(actions.state)
