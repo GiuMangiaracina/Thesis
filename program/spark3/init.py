@@ -142,13 +142,14 @@ def check(RT, ET, X, NL, n):
 
         # leave negative feedback
         tsViol = int(time.time())
+        db.feedback(tsViol)
         abort = db.set_data(actions.data_set_id)
         if abort != n_init:
             return 0
 
 
         #block = 0
-        db.feedback(tsViol)
+
 
         # start action selection process:create available action list
         actions.update_impacts()
@@ -364,7 +365,7 @@ def instantiate_cr_actions():
                 if row[1] == a.destination.id:
                     a.set_data_set(row[0])
                     # derive impacts from associated movement actions
-                    string = 'IM' + str(source_node) + str(a.destination.id) + '.txt'
+                    string = 'IM' + str(source_node) +"_"+ str(a.destination.id) + '.txt'
                     a.update_vector(string)
                     list.append(a)
 

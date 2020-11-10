@@ -148,13 +148,13 @@ def generate_actions(node_list):
                     return 0
 
                 a = Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,
-                           np.loadtxt("IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),
-                           "IM" + str(n.id) + str(c.id) + ".txt", cost_m, "IM" + str(n.id) + str(c.id))
+                           np.loadtxt("IM" + str(n.id) +"_"+ str(c.id) + ".txt", delimiter=","),
+                           "IM" + str(n.id) +"_"+ str(c.id) + ".txt", cost_m, "IM" + str(n.id) + str(c.id))
                 action_list.append(a)
                 id = id + 1
                 b = Action(id, n, c, 'copy', 'copy data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,
-                           np.loadtxt("IC" + str(n.id) + str(c.id) + ".txt", delimiter=","),
-                           "IC" + str(n.id) + str(c.id) + ".txt", cost_d, "IC" + str(n.id) + str(c.id))
+                           np.loadtxt("IC" + str(n.id) +"_"+ str(c.id) + ".txt", delimiter=","),
+                           "IC" + str(n.id) +"_"+ str(c.id) + ".txt", cost_d, "IC" + str(n.id) + str(c.id))
                 action_list.append(b)
                 id = id + 1
 

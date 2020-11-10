@@ -23,23 +23,25 @@ def generate_actions():
 
                 # create missing text files
 
-                if not os.path.exists("output_training/IM" + str(n.id) + str(c.id) + ".txt"):
-                    os.mknod("output_training/IM" + str(n.id) + str(c.id) + ".txt")
-                    np.savetxt("output_training/IM" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
+                if not os.path.exists("IM" + str(n.id) +"_"+ str(c.id) + ".txt"):
+                    os.mknod("output_training/IM" + str(n.id) +"_"+ str(c.id) + ".txt")
+                    np.savetxt("output_training/IM" + str(n.id) +"_"+ str(c.id) + ".txt", v, delimiter=',')
 
-                    os.mknod("output_training/IC" + str(n.id) + str(c.id) + ".txt")
-                    np.savetxt("output_training/IC" + str(n.id) + str(c.id) + ".txt", v, delimiter=',')
-
-                if not os.path.exists("output_training/ICR" + str(n.id) + ".txt"):
-                    os.mknod("output_training/ICR" + str(n.id) + ".txt")
-                    np.savetxt("output_training/ICR" + str(n.id) + ".txt", v, delimiter=',')
+                    os.mknod("output_training/IC" + str(n.id) + "_"+str(c.id) + ".txt")
+                    np.savetxt("output_training/IC" + str(n.id) + "_"+str(c.id) + ".txt", v, delimiter=',')
 
                     # generate movement actions
                 a = actions.Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,
-                                   np.loadtxt("output_training/IM" + str(n.id) + str(c.id) + ".txt", delimiter=","),
-                                   "output_training/IM" + str(n.id) + str(c.id) + ".txt", actions.cost_m,
+                                   np.loadtxt("output_training/IM" + str(n.id) +"_"+ str(c.id) + ".txt", delimiter=","),
+                                   "output_training/IM" + str(n.id) +"_"+ str(c.id) + ".txt", actions.cost_m,
                                    "IM" + str(n.id) + str(c.id))
                 action_list.append(a)
+
+                if not os.path.exists("ICR" + str(n.id) + ".txt"):
+                    os.mknod("output_training/ICR" + str(n.id) + ".txt")
+                    np.savetxt("output_training/ICR" + str(n.id) + ".txt", v, delimiter=',')
+
+
                 id = id + 1
 
 
