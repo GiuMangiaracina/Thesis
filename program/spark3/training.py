@@ -24,7 +24,7 @@ def generate_actions():
 
                 # create missing text files
 
-                if not os.path.exists("IM" + str(n.id) +"_"+ str(c.id) + ".txt"):
+                if not os.path.exists("output_training/IM" + str(n.id) +"_"+ str(c.id) + ".txt"):
                     os.mknod("output_training/IM" + str(n.id) +"_"+ str(c.id) + ".txt")
                     np.savetxt("output_training/IM" + str(n.id) +"_"+ str(c.id) + ".txt", v, delimiter=',')
 
@@ -137,7 +137,7 @@ def training():
             f.write(str(g))
 
         # save impact vector for copy action
-        with open("output_training/IC" + str(a.source.id) + str(a.destination.id) + ".txt", "w") as f:
+        with open("output_training/IC" + str(a.source.id) +"_"+ str(a.destination.id) + ".txt", "w") as f:
             for x in vector:
                 f.write(str(x) + "\n")
 
