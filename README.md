@@ -103,9 +103,7 @@ To verify in which containers you are, just type ``` ls ``` and verify the prese
 In the 'program' directory:
 
 1. - for Windows users: execute 'start_win.cmd'and wait until its completion;
-   - for Linux users: 
-       a. execute the file 'permission.sh' (needed to obtain the permissions to excute the files within the containers);
-       b. click on the file 'start.sh'and wait until its completion. Note that, at the end, a warning message may be shown. However, this should not cause concern.
+   - for Linux users: click on the file 'start.sh'and wait until its completion. Note that, at the end, a warning message may be shown. However, this should not cause concern.
     - for Mac users: execute 'start_mac.sh'and wait until its completion;
  This command initializes the proxies and the Spark History Servers.
 
