@@ -144,7 +144,7 @@ def generate_actions(node_list):
         for c in node_list:
             if (c.id != n.id):
 
-                if not os.path.exists("IM" + str(n.id) + str(c.id) + ".txt"):
+                if not os.path.exists("IM" + str(n.id) +"_"+ str(c.id) + ".txt"):
                     return 0
 
                 a = Action(id, n, c, 'move', 'move data from ' + str(n.id) + ' to ' + str(c.id), c.mean_delay,
